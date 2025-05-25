@@ -1,36 +1,38 @@
-package br.edu.fatecgru.buscameds.document;
+package br.edu.fatecgru.buscameds.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-@Document(collection = "locals")
-public class LocalDocument {
+@Document(collection = "location")
+public class Location {
 
     @Id
     private String cnes;
-    private Address address;
-    private String phone;
+
     private String name;
+    private String phone;
+    private Address address;
 
-    public LocalDocument() {}
 
-    public LocalDocument(String cnes, Address address, String phone, String name) {
+    public Location() {}
+
+    public Location(String cnes, String name, String phone, Address address) {
         this.cnes = cnes;
-        this.address = address;
-        this.phone = phone;
         this.name = name;
+        this.phone = phone;
+        this.address = address;
     }
 
     public String getCnes() {
         return cnes;
     }
 
-    public Address getAddress() {
-        return address;
+    public String getName() {
+        return name;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getPhone() {
@@ -41,13 +43,14 @@ public class LocalDocument {
         this.phone = phone;
     }
 
-    public String getName() {
-        return name;
+    public Address getAddress() {
+        return address;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAddress(Address address) {
+        this.address = address;
     }
+
 
     @Override
     public String toString() {

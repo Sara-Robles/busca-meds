@@ -1,4 +1,4 @@
-package br.edu.fatecgru.buscameds.document;
+package br.edu.fatecgru.buscameds.model;
 
 public class Address {
     private String street;
