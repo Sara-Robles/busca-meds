@@ -1,11 +1,6 @@
 package br.edu.fatecgru.buscameds.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document(collection = "medicine")
 public class Medicine {
-    @Id
     private String catmatCode;
     private String name;
 
@@ -19,6 +14,8 @@ public class Medicine {
     public String getCatmatCode() {
         return catmatCode;
     }
+
+    public void setCatmatCode(String catmatCode) {}
 
     public String getName() {
         return name;

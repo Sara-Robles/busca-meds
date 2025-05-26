@@ -1,14 +1,8 @@
 package br.edu.fatecgru.buscameds.model;
 
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
-
-@Document(collection = "location")
 public class Location {
 
-    @Id
-    private String cnes;
-
+    private String cnesCode;
     private String name;
     private String phone;
     private Address address;
@@ -17,15 +11,17 @@ public class Location {
     public Location() {}
 
     public Location(String cnes, String name, String phone, Address address) {
-        this.cnes = cnes;
+        this.cnesCode = cnes;
         this.name = name;
         this.phone = phone;
         this.address = address;
     }
 
-    public String getCnes() {
-        return cnes;
+    public String getCnesCode() {
+        return cnesCode;
     }
+
+    public void setCnesCode(String cnesCode) {}
 
     public String getName() {
         return name;
@@ -51,13 +47,4 @@ public class Location {
         this.address = address;
     }
 
-
-    @Override
-    public String toString() {
-        return "LocalDocument{" +
-                "address=" + address +
-                ", phone='" + phone + '\'' +
-                ", name='" + name + '\'' +
-                '}';
-    }
 }
