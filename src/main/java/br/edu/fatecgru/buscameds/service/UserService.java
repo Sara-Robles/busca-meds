@@ -1,12 +1,12 @@
 package br.edu.fatecgru.buscameds.service;
 
-import br.edu.fatecgru.buscameds.repository.FavoriteRepository;
+import br.edu.fatecgru.buscameds.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class FavoriteService {
+public class UserService {
 
     @Autowired
-    private FavoriteRepository favoriteRepository;
+    private UserRepository userRepository;
 }
