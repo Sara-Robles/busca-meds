@@ -30,4 +30,12 @@ public class Favorite {
     public void setLocations(List<Location> locations) {
         this.locations = locations;
     }
+
+    public void addMedicine(Medicine medicine) {
+        medicines.add(medicine);
+    }
+
+    public void addLocation(Location location) {
+        locations.add(location);
+    }
 }

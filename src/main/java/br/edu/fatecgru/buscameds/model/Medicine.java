@@ -15,7 +15,9 @@ public class Medicine {
         return catmatCode;
     }
 
-    public void setCatmatCode(String catmatCode) {}
+    public void setCatmatCode(String catmatCode) {
+        this.catmatCode = catmatCode;
+    }
 
     public String getName() {
         return name;

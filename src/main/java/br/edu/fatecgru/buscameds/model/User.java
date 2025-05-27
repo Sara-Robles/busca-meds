@@ -10,6 +10,7 @@ public class User {
     String id;
     String name;
     String email;
+
     Favorite favorite;
 
     public User() {
@@ -52,5 +53,13 @@ public class User {
 
     public void setFavorite(Favorite favorite) {
         this.favorite = favorite;
+    }
+
+    public void addMedicine(Medicine medicine) {
+        favorite.addMedicine(medicine);
+    }
+
+    public void addLocation(Location location) {
+        favorite.addLocation(location);
     }
 }

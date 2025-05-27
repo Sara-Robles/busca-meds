@@ -21,7 +21,9 @@ public class Location {
         return cnesCode;
     }
 
-    public void setCnesCode(String cnesCode) {}
+    public void setCnesCode(String cnesCode) {
+        this.cnesCode = cnesCode;
+    }
 
     public String getName() {
         return name;

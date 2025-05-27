@@ -1,19 +1,17 @@
 package br.edu.fatecgru.buscameds.controller;
 
-import br.edu.fatecgru.buscameds.DTO.UserDTO;
-import br.edu.fatecgru.buscameds.service.UserService;
+import br.edu.fatecgru.buscameds.service.FavoriteService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class AuthController {
 
-    @Autowired
-    UserService userService;
+    //@Autowired
+   // FavoriteService favoriteService;
 
     // LOGIN
+    /*
     @PostMapping("/login")
     public ResponseEntity<UserDTO> login(UserDTO userDTO) {
 
@@ -26,8 +24,10 @@ public class AuthController {
 
         return userService.login();
     }
+     */
 
     // CADASTRO
+    /*
     @PostMapping("/register")
     public ResponseEntity<UserDTO> register(UserDTO userDTO) {
         try {
@@ -38,4 +38,5 @@ public class AuthController {
         }
         return userService.registerUser();
     }
+     */
 }
