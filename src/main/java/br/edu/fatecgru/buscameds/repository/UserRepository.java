@@ -9,11 +9,11 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends MongoRepository<User, String> {
 
-    void deleteFavoriteById(String id);
+    //void deleteFavoriteById(String id);
 
-    Favorite findFavoriteById(String id);
+    //Favorite findFavoriteById(String id);
 
-    void saveFavorite(String id, Favorite favorite);
+    //void saveFavorite(String id, Favorite favorite);
 
     User save(User user);
 

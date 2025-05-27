@@ -34,28 +34,28 @@ public class FavoriteService {
         return locations;
     }
 
-    public Favorite getFavorite(String id) {
-        return userRepository.findFavoriteById(id);
-    }
+//    public Favorite getFavorite(String id) {
+//        return userRepository.findFavoriteById(id);
+//    }
 
-    public void saveFavorite(String id, Favorite favorite) {
-        userRepository.saveFavorite(id, favorite);
-    }
+//    public void saveFavorite(String id, Favorite favorite) {
+//        userRepository.saveFavorite(id, favorite);
+//    }
 
-    public void deleteFavorite(String id) {
-        userRepository.deleteFavoriteById(id);
-    }
+//    public void deleteFavorite(String id) {
+//        userRepository.deleteFavoriteById(id);
+//    }
 
-    public void saveMedicine(String id, Medicine medicine) {
-        Favorite favorite = userRepository.findFavoriteById(id);
-        favorite.addMedicine(medicine);
-        saveFavorite(id, favorite);
-    }
-
-    public void saveLocation(String id, Location location) {
-        Favorite favorite = userRepository.findFavoriteById(id);
-        favorite.addLocation(location);
-        saveFavorite(id, favorite);
-    }
+//    public void saveMedicine(String id, Medicine medicine) {
+//        Favorite favorite = userRepository.findFavoriteById(id);
+//        favorite.addMedicine(medicine);
+//        saveFavorite(id, favorite);
+//    }
+//
+//    public void saveLocation(String id, Location location) {
+//        Favorite favorite = userRepository.findFavoriteById(id);
+//        favorite.addLocation(location);
+//        saveFavorite(id, favorite);
+//    }
 
 }

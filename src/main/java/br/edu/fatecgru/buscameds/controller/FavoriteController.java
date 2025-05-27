@@ -36,13 +36,13 @@ public class FavoriteController {
     }
 
     // EXIBE FAVORITOS DO USUÁRIO PELO ID
-    @GetMapping("/favorites")
-    public ResponseEntity<Favorite> favoritesPage(@RequestParam String id) {
-
-        return ResponseEntity.ok( favoriteService.getFavorite(id) );
-
-        //try { } catch (Exception ex) { ex.getMessage(); }
-    }
+//    @GetMapping("/favorites")
+//    public ResponseEntity<Favorite> favoritesPage(@RequestParam String id) {
+//
+//        return ResponseEntity.ok( favoriteService.getFavorite(id) );
+//
+//        //try { } catch (Exception ex) { ex.getMessage(); }
+//    }
 
     // SALVA REMÉDIO
     @PostMapping("/favorites/save-medicine")
@@ -50,7 +50,7 @@ public class FavoriteController {
                                @RequestBody String id) {
 
         try {
-            favoriteService.saveMedicine(id, medicine);
+            //favoriteService.saveMedicine(id, medicine);
             return ResponseEntity.ok("Remédio salvo com sucesso!");
 
         } catch (Exception ex) {
@@ -64,7 +64,7 @@ public class FavoriteController {
                                @RequestBody String id) {
 
         try {
-            favoriteService.saveLocation(id, location);
+            //favoriteService.saveLocation(id, location);
             return ResponseEntity.ok("Local salvo com sucesso!");
 
         } catch (Exception ex) {
@@ -73,18 +73,18 @@ public class FavoriteController {
     }
 
     // DELETA FAVORITO
-    @DeleteMapping("/favorites/delete/")
-    public ResponseEntity<String> deleteFavorite(@RequestBody String id) {
-
-        try {
-            favoriteService.deleteFavorite(id);
-            ResponseEntity.ok( "Local excluído com sucesso!" );
-
-        } catch (Exception ex) {
-            ResponseEntity.ok( "Erro ao excluir! " + ex.getMessage() );
-        }
-
-        return ResponseEntity.notFound().build();
-    }
+//    @DeleteMapping("/favorites/delete/")
+//    public ResponseEntity<String> deleteFavorite(@RequestBody String id) {
+//
+//        try {
+//            favoriteService.deleteFavorite(id);
+//            ResponseEntity.ok( "Local excluído com sucesso!" );
+//
+//        } catch (Exception ex) {
+//            ResponseEntity.ok( "Erro ao excluir! " + ex.getMessage() );
+//        }
+//
+//        return ResponseEntity.notFound().build();
+//    }
 
 }
