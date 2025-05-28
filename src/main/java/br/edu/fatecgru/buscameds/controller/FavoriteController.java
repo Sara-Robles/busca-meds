@@ -1,6 +1,5 @@
 package br.edu.fatecgru.buscameds.controller;
 
-import br.edu.fatecgru.buscameds.model.Favorite;
 import br.edu.fatecgru.buscameds.model.Location;
 import br.edu.fatecgru.buscameds.model.Medicine;
 import br.edu.fatecgru.buscameds.service.FavoriteService;

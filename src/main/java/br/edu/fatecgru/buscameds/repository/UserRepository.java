@@ -1,7 +1,5 @@
 package br.edu.fatecgru.buscameds.repository;
 
-import br.edu.fatecgru.buscameds.DTO.UserFavoritesDTO;
-import br.edu.fatecgru.buscameds.model.Favorite;
 import br.edu.fatecgru.buscameds.model.User;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;

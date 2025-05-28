@@ -1,10 +1,6 @@
 package br.edu.fatecgru.buscameds.service;
 
-import br.edu.fatecgru.buscameds.DTO.UserDTO;
-import br.edu.fatecgru.buscameds.DTO.UserFavoritesDTO;
-import br.edu.fatecgru.buscameds.model.Favorite;
 import br.edu.fatecgru.buscameds.model.Location;
-import br.edu.fatecgru.buscameds.model.Medicine;
 import br.edu.fatecgru.buscameds.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
