@@ -1,11 +1,13 @@
 package br.edu.fatecgru.buscameds.DTO;
 
+import br.edu.fatecgru.buscameds.model.Favorite;
 import br.edu.fatecgru.buscameds.model.User;
 
 public class UserDTO {
 
     String name;
     String email;
+    Favorite favorite;
 
     public UserDTO() {
     }
@@ -14,6 +16,7 @@ public class UserDTO {
     public UserDTO(User user) {
         this.name = user.getName();
         this.email = user.getEmail();
+        this.favorite = user.getFavorite();
     }
 
     public void setName(String name) {
@@ -32,5 +35,8 @@ public class UserDTO {
         return email;
     }
 
+    public Favorite getFavorite() { return favorite; }
+
+    public void setFavorite(Favorite favorite) { this.favorite = favorite; }
 }
 

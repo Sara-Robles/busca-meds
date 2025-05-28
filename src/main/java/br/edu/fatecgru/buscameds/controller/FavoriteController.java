@@ -1,5 +1,6 @@
 package br.edu.fatecgru.buscameds.controller;
 
+import br.edu.fatecgru.buscameds.model.Favorite;
 import br.edu.fatecgru.buscameds.model.Location;
 import br.edu.fatecgru.buscameds.model.Medicine;
 import br.edu.fatecgru.buscameds.service.FavoriteService;
@@ -18,14 +19,13 @@ public class FavoriteController {
     // BUSCA REMÉDIO
     @GetMapping("/home")
     public ResponseEntity<List<Location>> searchMedicine(@RequestParam String catmatCode,
-                                         @RequestParam (required = false) String cep,
-                                         @RequestParam (required = false) String neighborhood) {
-        if (cep != null) {
+                                                         @RequestParam (required = false) String neighborhood,
+                                                         @RequestParam (required = false) String cep) {
+        if (neighborhood != null) {
+           return ResponseEntity.ok( favoriteService.searchByNeighborhood(catmatCode, neighborhood) );
 
-           return ResponseEntity.ok( favoriteService.searchByCep(catmatCode, cep) );
-
-        } else if (neighborhood != null) {
-            return ResponseEntity.ok( favoriteService.searchByNeighborhood(catmatCode, neighborhood) );
+        } else if (cep != null) {
+            return ResponseEntity.ok( favoriteService.searchByCep(catmatCode, cep) );
 
         } else {
             return ResponseEntity.ok( favoriteService.searchByCatmat(catmatCode) );
@@ -35,23 +35,18 @@ public class FavoriteController {
     }
 
     // EXIBE FAVORITOS DO USUÁRIO PELO ID
-//    @GetMapping("/favorites")
-//    public ResponseEntity<Favorite> favoritesPage(@RequestParam String id) {
-//
-//        return ResponseEntity.ok( favoriteService.getFavorite(id) );
-//
-//        //try { } catch (Exception ex) { ex.getMessage(); }
-//    }
+    @GetMapping("/favorites")
+    public ResponseEntity<Favorite> getFavorites(@RequestParam String id) {
+        return ResponseEntity.ok(favoriteService.getFavorites(id));
+    }
 
     // SALVA REMÉDIO
     @PostMapping("/favorites/save-medicine")
-    public ResponseEntity<String> saveMedicine(@RequestBody Medicine medicine,
-                               @RequestBody String id) {
-
+    public ResponseEntity<String> saveMedicine(@RequestParam String id,
+                                               @RequestBody Medicine medicine) {
         try {
-            //favoriteService.saveMedicine(id, medicine);
+            favoriteService.saveMedicine(id, medicine);
             return ResponseEntity.ok("Remédio salvo com sucesso!");
-
         } catch (Exception ex) {
             return ResponseEntity.ok( "Erro ao salvar! " + ex.getMessage() );
         }
@@ -59,31 +54,46 @@ public class FavoriteController {
 
     // SALVA LOCAL
     @PostMapping("/favorites/save-location")
-    public ResponseEntity<String> saveLocation(@RequestBody Location location,
-                               @RequestBody String id) {
-
+    public ResponseEntity<String> saveLocation(@RequestParam String id,
+                                               @RequestBody Location location) {
         try {
-            //favoriteService.saveLocation(id, location);
+            favoriteService.saveLocation(id, location);
             return ResponseEntity.ok("Local salvo com sucesso!");
-
         } catch (Exception ex) {
-            return ResponseEntity.ok("Erro ao salvar! " + ex.getMessage());
+            return ResponseEntity.ok( "Erro ao salvar! " + ex.getMessage() );
         }
     }
 
-    // DELETA FAVORITO
-//    @DeleteMapping("/favorites/delete/")
-//    public ResponseEntity<String> deleteFavorite(@RequestBody String id) {
-//
-//        try {
-//            favoriteService.deleteFavorite(id);
-//            ResponseEntity.ok( "Local excluído com sucesso!" );
-//
-//        } catch (Exception ex) {
-//            ResponseEntity.ok( "Erro ao excluir! " + ex.getMessage() );
-//        }
-//
-//        return ResponseEntity.notFound().build();
-//    }
+    // EXCLUI REMÉDIO
+    @DeleteMapping("/favorites/delete-medicine/{id}/{catmatCode}")
+    public ResponseEntity<String> deleteMedicine(@PathVariable String id,
+                                                 @PathVariable String catmatCode) {
+
+        try {
+            favoriteService.deleteMedicine(id, catmatCode);
+            return ResponseEntity.ok( "Remédio excluído com sucesso!" );
+
+        } catch (Exception ex) {
+            ResponseEntity.ok( "Erro ao excluir! " + ex.getMessage() );
+        }
+
+        return ResponseEntity.notFound().build();
+    }
+
+    //EXCLUI LOCAL
+    @DeleteMapping("/favorites/delete-location/{id}/{cnesCode}")
+    public ResponseEntity<String> deleteLocation(@PathVariable String id,
+                                                 @PathVariable String cnesCode) {
+
+        try {
+            favoriteService.deleteLocation(id, cnesCode);
+            return ResponseEntity.ok( "Local excluído com sucesso!" );
+
+        } catch (Exception ex) {
+            ResponseEntity.ok( "Erro ao excluir! " + ex.getMessage() );
+        }
+
+        return ResponseEntity.notFound().build();
+    }
 
 }
