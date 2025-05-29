@@ -7,12 +7,10 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends MongoRepository<User, String> {
 
-    //void deleteFavoriteById(String id);
-
-    //Favorite findFavoriteById(String id);
-
-    //void saveFavorite(String id, Favorite favorite);
-
     User save(User user);
+
+    User findByEmail(String email);
+
+    boolean existsByEmail(String email);
 
 }

@@ -2,25 +2,65 @@ package br.edu.fatecgru.buscameds.model;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.Collections;
 
 @Document(collection = "user")
-public class User {
+public class User implements UserDetails {
 
     @Id
-    String id;
-    String name;
-    String email;
+    private String id;
+    private String name;
+    private String email;
+    private String password;
 
-    Favorite favorite;
+    private Favorite favorite;
 
-    public User() {
-    }
+    public User() { }
 
-    public User(String id, String name, String email, Favorite favorite) {
-        this.id = id;
+    public User(String name, String email, String password, Favorite favorite) {
         this.name = name;
         this.email = email;
+        this.password = password;
         this.favorite = favorite;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return Collections.emptyList();
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return email;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return UserDetails.super.isAccountNonExpired();
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return UserDetails.super.isAccountNonLocked();
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return UserDetails.super.isCredentialsNonExpired();
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return UserDetails.super.isEnabled();
     }
 
     public String getId() {
@@ -47,19 +87,15 @@ public class User {
         this.email = email;
     }
 
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
     public Favorite getFavorite() {
         return favorite;
     }
 
     public void setFavorite(Favorite favorite) {
         this.favorite = favorite;
-    }
-
-    public void addMedicine(Medicine medicine) {
-        favorite.addMedicine(medicine);
-    }
-
-    public void addLocation(Location location) {
-        favorite.addLocation(location);
     }
 }
