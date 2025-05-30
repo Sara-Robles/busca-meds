@@ -36,7 +36,7 @@ public class FavoriteController {
     }
 
     // EXIBE FAVORITOS DO USUÁRIO PELO ID
-    @GetMapping("/favorites/list")
+    @GetMapping("/favorites")
     public ResponseEntity<?> getFavorites(@RequestParam String id) {
         return ResponseEntity.ok(favoriteService.getFavorites(id));
     }
@@ -51,7 +51,7 @@ public class FavoriteController {
     }
 
     // SALVA LOCAL
-    @PostMapping("/favorites/save-location")
+        @PostMapping("/favorites/save-location")
     public ResponseEntity<String> saveLocation(@RequestParam String id,
                                                @RequestBody Location location) {
         favoriteService.saveLocation(id, location);
