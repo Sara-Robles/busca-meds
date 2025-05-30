@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/buscameds")
+@RequestMapping("buscameds")
 public class FavoriteController {
 
     @Autowired
@@ -37,7 +37,7 @@ public class FavoriteController {
 
     // EXIBE FAVORITOS DO USUÁRIO PELO ID
     @GetMapping("/favorites/list")
-    public ResponseEntity<Favorite> getFavorites(@RequestParam String id) {
+    public ResponseEntity<?> getFavorites(@RequestParam String id) {
         return ResponseEntity.ok(favoriteService.getFavorites(id));
     }
 
@@ -45,24 +45,17 @@ public class FavoriteController {
     @PostMapping("/favorites/save-medicine")
     public ResponseEntity<String> saveMedicine(@RequestParam String id,
                                                @RequestBody Medicine medicine) {
-        try {
-            favoriteService.saveMedicine(id, medicine);
-            return ResponseEntity.ok("Remédio salvo com sucesso!");
-        } catch (Exception ex) {
-            return ResponseEntity.ok( "Erro ao salvar! " + ex.getMessage() );
-        }
+
+        favoriteService.saveMedicine(id, medicine);
+        return ResponseEntity.ok("Remédio favoritado com sucesso.");
     }
 
     // SALVA LOCAL
     @PostMapping("/favorites/save-location")
     public ResponseEntity<String> saveLocation(@RequestParam String id,
                                                @RequestBody Location location) {
-        try {
-            favoriteService.saveLocation(id, location);
-            return ResponseEntity.ok("Local salvo com sucesso!");
-        } catch (Exception ex) {
-            return ResponseEntity.ok( "Erro ao salvar! " + ex.getMessage() );
-        }
+        favoriteService.saveLocation(id, location);
+        return ResponseEntity.ok("Local favoritado com sucesso.");
     }
 
     // EXCLUI REMÉDIO
@@ -70,15 +63,8 @@ public class FavoriteController {
     public ResponseEntity<String> deleteMedicine(@PathVariable String id,
                                                  @PathVariable String catmatCode) {
 
-        try {
-            favoriteService.deleteMedicine(id, catmatCode);
-            return ResponseEntity.ok( "Remédio excluído com sucesso!" );
-
-        } catch (Exception ex) {
-            ResponseEntity.ok( "Erro ao excluir! " + ex.getMessage() );
-        }
-
-        return ResponseEntity.notFound().build();
+        favoriteService.deleteMedicine(id, catmatCode);
+        return ResponseEntity.ok( "Remédio removido dos favoritos." );
     }
 
     //EXCLUI LOCAL
@@ -86,15 +72,8 @@ public class FavoriteController {
     public ResponseEntity<String> deleteLocation(@PathVariable String id,
                                                  @PathVariable String cnesCode) {
 
-        try {
-            favoriteService.deleteLocation(id, cnesCode);
-            return ResponseEntity.ok( "Local excluído com sucesso!" );
-
-        } catch (Exception ex) {
-            ResponseEntity.ok( "Erro ao excluir! " + ex.getMessage() );
-        }
-
-        return ResponseEntity.notFound().build();
+        favoriteService.deleteLocation(id, cnesCode);
+        return ResponseEntity.ok( "Local removido dos favoritos." );
     }
 
 }

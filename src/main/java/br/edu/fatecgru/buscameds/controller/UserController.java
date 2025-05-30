@@ -15,22 +15,19 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("user")
 public class UserController {
 
     @Autowired
     private UserService userService;
 
     @Autowired
-    JwtFilter jwtFilter;
-
-    @Autowired
     UserDetailsServiceImpl userDetailsService;
 
 
     @GetMapping("/list")
-    public List<User> getUsers() {
-       return userService.findAll();
+    public ResponseEntity<List<User>> getUsers() {
+        return ResponseEntity.ok(userService.findAll());
     }
 
     @GetMapping("/update")
@@ -48,42 +45,27 @@ public class UserController {
     @PutMapping("/update")
     public ResponseEntity<String> update(@RequestBody User user) {
 
-        try {
-            userService.updateByEmail(user, user.getEmail());
-            ResponseEntity.ok("Usuário atualizado com sucesso!");
-
-        } catch (Exception ex) {
-            ResponseEntity.ok( "Erro ao atualizar! " + ex.getMessage());
-        }
-
-       return ResponseEntity.ok( "Erro ao atualizar!");
+        userService.updateByEmail(user, user.getEmail());
+        return ResponseEntity.ok("Usuário atualizado com sucesso!");
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<String> delete(@PathVariable String id) {
 
-        try {
-            userService.delete(id);
-            ResponseEntity.ok("Usuário removido com sucesso!");
+        userService.delete(id);
+        return ResponseEntity.ok("Usuário removido com sucesso!");
 
-        } catch (Exception ex) {
-            ResponseEntity.ok("Erro ao remover! " + ex.getMessage());
-        }
-        return ResponseEntity.ok( "Erro ao remover!");
     }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody User user,
                                    HttpServletResponse response) {
-        try {
-            Cookie cookie = userService.login(
-                    user.getEmail(), user.getPassword());
-            response.addCookie(cookie);
 
-            return ResponseEntity.ok("Usuário logado com sucesso!");
-        } catch (Exception e) {
-            return ResponseEntity.ok("Não foi possível realizar o login! " + e.getMessage());
-        }
+        Cookie cookie = userService.login(
+                user.getEmail(), user.getPassword());
+        response.addCookie(cookie);
+
+        return ResponseEntity.ok("Usuário logado com sucesso!");
     }
 
     @PostMapping("/registration")
@@ -94,13 +76,10 @@ public class UserController {
             return ResponseEntity.ok("Usuário já cadastrado!");
         }
 
-        try {
-            newUser.setPassword(newUser.getPassword());
-            userService.register(newUser);
-            return ResponseEntity.ok("Usuário cadastrado com sucesso!");
-        } catch (Exception e) {
-            return ResponseEntity.ok("Não foi possível realizar o cadastro! " + e.getMessage());
-        }
+        newUser.setPassword(newUser.getPassword());
+        userService.register(newUser);
+        return ResponseEntity.ok("Usuário cadastrado com sucesso!");
+
 
     }
 
