@@ -11,13 +11,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
+@RequestMapping("/buscameds")
 public class FavoriteController {
 
     @Autowired
     private FavoriteService favoriteService;
 
     // BUSCA REMÉDIO
-    @GetMapping("/home")
+    @GetMapping("/search")
     public ResponseEntity<List<Location>> searchMedicine(@RequestParam String catmatCode,
                                                          @RequestParam (required = false) String neighborhood,
                                                          @RequestParam (required = false) String cep) {
@@ -35,7 +36,7 @@ public class FavoriteController {
     }
 
     // EXIBE FAVORITOS DO USUÁRIO PELO ID
-    @GetMapping("/favorites")
+    @GetMapping("/favorites/list")
     public ResponseEntity<Favorite> getFavorites(@RequestParam String id) {
         return ResponseEntity.ok(favoriteService.getFavorites(id));
     }

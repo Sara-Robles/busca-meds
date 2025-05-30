@@ -62,12 +62,20 @@ public class UserService {
         return userRepository.save(newUser);
     }
 
-    public User findUserByEmail(String email) {
-        return userRepository.findByEmail(email);
-    }
 
     public boolean existsByEmail(String email) {
         return userRepository.existsByEmail(email);
     }
 
+
+    public void updateByEmail(User user, String email) {
+    }
+
+    public User findById(String id) {
+        return userRepository.findById(id).get();
+    }
+
+    public User findByEmail(String email) {
+        return userRepository.findByEmail(email);
+    }
 }

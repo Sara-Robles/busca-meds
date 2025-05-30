@@ -30,15 +30,18 @@ public class JwtFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        var token = this.recoverToken(request);
+        String token = this.recoverToken(request);
 
         if (token != null) {
-            var email = jwtService.validateToken(token);
+            String email = jwtService.validateToken(token);
             UserDetails user = userRepository.findByEmail(email);
 
 
             if (user != null) {
-                var authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
+                var authentication = new UsernamePasswordAuthenticationToken(
+                        user,
+                        null,
+                        user.getAuthorities());
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             }
         }
