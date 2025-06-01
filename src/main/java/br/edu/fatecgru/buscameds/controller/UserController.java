@@ -83,4 +83,12 @@ public class UserController {
 
     }
 
+    @PostMapping("/logout")
+    public ResponseEntity<?> logout(HttpServletResponse response) {
+
+        response.addCookie(userService.logout());
+
+        return ResponseEntity.ok("Logout realizado com sucesso!");
+    }
+
 }

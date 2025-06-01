@@ -15,8 +15,8 @@ public class User implements UserDetails {
     private String id;
 
     private String name;
-    private String password;
     private String email;
+    private String password;
     private Favorite favorite;
 
     public User() { }
