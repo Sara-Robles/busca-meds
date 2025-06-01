@@ -1,6 +1,5 @@
 package br.edu.fatecgru.buscameds.controller;
 
-import br.edu.fatecgru.buscameds.model.Favorite;
 import br.edu.fatecgru.buscameds.model.Location;
 import br.edu.fatecgru.buscameds.model.Medicine;
 import br.edu.fatecgru.buscameds.service.FavoriteService;
@@ -8,32 +7,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
 
 @RestController
 @RequestMapping("buscameds")
+@CrossOrigin(origins = "*")
+
 public class FavoriteController {
 
     @Autowired
     private FavoriteService favoriteService;
-
-    // BUSCA REMÉDIO
-    @GetMapping("/search")
-    public ResponseEntity<List<Location>> searchMedicine(@RequestParam String catmatCode,
-                                                         @RequestParam (required = false) String neighborhood,
-                                                         @RequestParam (required = false) String cep) {
-        if (neighborhood != null) {
-           return ResponseEntity.ok( favoriteService.searchByNeighborhood(catmatCode, neighborhood) );
-
-        } else if (cep != null) {
-            return ResponseEntity.ok( favoriteService.searchByCep(catmatCode, cep) );
-
-        } else {
-            return ResponseEntity.ok( favoriteService.searchByCatmat(catmatCode) );
-        }
-
-        //try { } catch (Exception ex) { ex.getMessage(); }
-    }
 
     // EXIBE FAVORITOS DO USUÁRIO PELO ID
     @GetMapping("/favorites")
