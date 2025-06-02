@@ -100,6 +100,10 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
 
             const locations = await response.json();
+
+            // Armazena os locais para usar em outros JS:
+            localStorage.setItem('locations', JSON.stringify(locations));
+
             console.log('Estabelecimentos encontrados:', locations);
 
             let favorites = { medicines: [], locations: [] };

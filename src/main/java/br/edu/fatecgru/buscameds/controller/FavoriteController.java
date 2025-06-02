@@ -1,11 +1,15 @@
 package br.edu.fatecgru.buscameds.controller;
 
+import br.edu.fatecgru.buscameds.model.Favorite;
 import br.edu.fatecgru.buscameds.model.Location;
 import br.edu.fatecgru.buscameds.model.Medicine;
 import br.edu.fatecgru.buscameds.service.FavoriteService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -17,44 +21,53 @@ public class FavoriteController {
     @Autowired
     private FavoriteService favoriteService;
 
-    // EXIBE FAVORITOS DO USUÁRIO PELO ID
+    // EXIBE FAVORITOS DO USUÁRIO
     @GetMapping("/favorites")
-    public ResponseEntity<?> getFavorites(@RequestParam String id) {
-        return ResponseEntity.ok(favoriteService.getFavorites(id));
+    public ResponseEntity<?> getFavorites(Authentication authentication) {
+        String email = authentication.getName();
+        Favorite favorites = favoriteService.getFavorites(email);
+        return ResponseEntity.ok(favorites);
     }
 
     // SALVA REMÉDIO
     @PostMapping("/favorites/save-medicine")
-    public ResponseEntity<String> saveMedicine(@RequestParam String id,
+    public ResponseEntity<String> saveMedicine(Authentication authentication,
                                                @RequestBody Medicine medicine) {
+        String email = authentication.getName();
+        favoriteService.saveMedicine(email, medicine);
 
-        favoriteService.saveMedicine(id, medicine);
         return ResponseEntity.ok("Remédio favoritado com sucesso.");
     }
 
     // SALVA LOCAL
         @PostMapping("/favorites/save-location")
-    public ResponseEntity<String> saveLocation(@RequestParam String id,
+    public ResponseEntity<String> saveLocation(Authentication authentication,
                                                @RequestBody Location location) {
-        favoriteService.saveLocation(id, location);
+        String email = authentication.getName();
+        favoriteService.saveLocation(email, location);
+
         return ResponseEntity.ok("Local favoritado com sucesso.");
     }
 
     // EXCLUI REMÉDIO
-    @DeleteMapping("/favorites/delete-medicine/{id}/{catmatCode}")
-    public ResponseEntity<String> deleteMedicine(@PathVariable String id,
+    @DeleteMapping("/favorites/delete-medicine/{catmatCode}")
+    public ResponseEntity<String> deleteMedicine(Authentication authentication,
                                                  @PathVariable String catmatCode) {
 
-        favoriteService.deleteMedicine(id, catmatCode);
+        String email = authentication.getName();
+        favoriteService.deleteMedicine(email, catmatCode);
+
         return ResponseEntity.ok( "Remédio removido dos favoritos." );
     }
 
     //EXCLUI LOCAL
-    @DeleteMapping("/favorites/delete-location/{id}/{cnesCode}")
-    public ResponseEntity<String> deleteLocation(@PathVariable String id,
+    @DeleteMapping("/favorites/delete-location/{cnesCode}")
+    public ResponseEntity<String> deleteLocation(Authentication authentication,
                                                  @PathVariable String cnesCode) {
 
-        favoriteService.deleteLocation(id, cnesCode);
+        String email = authentication.getName();
+        favoriteService.deleteLocation(email, cnesCode);
+
         return ResponseEntity.ok( "Local removido dos favoritos." );
     }
 

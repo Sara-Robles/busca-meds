@@ -32,6 +32,7 @@ public class SecurityConfig {
                                 "/home",
                                 "/login",
                                 "/register",
+                                "/buscameds/**",
                                 "/favorites/**"
                         ).permitAll()
 

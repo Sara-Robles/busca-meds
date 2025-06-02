@@ -1,11 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
-    // Extract user email from JWT token
-    let userEmail = getUserEmailFromToken();
-    if (!userEmail) {
-        console.error('Usuário não autenticado');
-        showError('Você precisa estar logado para ver os favoritos');
-        return;
-    }
+
 
     // Containers for medicines and locations
     const medicinesContainer = document.createElement('div');
@@ -16,20 +9,29 @@ document.addEventListener('DOMContentLoaded', function() {
     locationsContainer.className = 'row';
     document.querySelector('.col:nth-child(2)').appendChild(locationsContainer);
 
-    // Fetch favorites on page load
+    // Função que busca os favoritos
     async function fetchFavorites() {
         try {
-            const response = await fetch(`/buscameds/favorites?id=${encodeURIComponent(userEmail)}`);
+            const response = await fetch('/buscameds/favorites', {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                }
+            });
+
+
             if (!response.ok) {
                 throw new Error(`Erro ao buscar favoritos: ${response.status}`);
             }
+
             const favorites = await response.json();
-            console.log('Favoritos retornados:', favorites);
+            console.log('Favoritos:', favorites);
 
             displayFavorites(favorites);
+
         } catch (error) {
             console.error('Erro ao carregar favoritos:', error);
-            showError('Erro ao carregar favoritos');
         }
     }
 
@@ -194,43 +196,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return cep.replace(/(\d{5})(\d{3})/, '$1-$2');
     }
 
-    // Extract user email from JWT token
-    function getUserEmailFromToken() {
-        // Try to get token from cookie
-        const cookies = document.cookie.split(';');
-        let token = null;
-        for (const cookie of cookies) {
-            const [name, value] = cookie.trim().split('=');
-            if (name === 'auth_token') {
-                token = value;
-                break;
-            }
-        }
-
-        if (!token) {
-            // Try to get token from Authorization header (via meta tag or script injection)
-            const metaToken = document.querySelector('meta[name="jwt-token"]');
-            if (metaToken) {
-                token = metaToken.getAttribute('content');
-            }
-        }
-
-        if (!token) return null;
-
-        // Validate token and extract email (simplified; in practice, use a server-side call or JWT library)
-        try {
-            // This is a client-side approximation; ideally, validate on the server
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-            const payload = JSON.parse(jsonPayload);
-            return payload.sub; // 'sub' is the subject (email) in the JWT
-        } catch (e) {
-            console.error('Erro ao decodificar token:', e);
-            return null;
-        }
-    }
-
-    // Initial fetch of favorites
-    fetchFavorites();
-});
+    // Quando a página carregar, chama fetchFavorites
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchFavorites();
+    });

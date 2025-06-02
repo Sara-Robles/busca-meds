@@ -35,14 +35,13 @@ public class FavoriteService {
         return locations;
     }
 
-    public Favorite getFavorites(String id) {
+    public Favorite getFavorites(String email) throws NoSuchElementException {
 
-        if (id == null) {
+        if (email == null) {
             throw new IllegalArgumentException();
         }
 
-        User user = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Usuário não encontrado!"));
+        User user = userRepository.findByEmail(email);
 
         Favorite favorite = user.getFavorite();
 
@@ -54,63 +53,63 @@ public class FavoriteService {
         return favorite;
     }
 
-    public void saveMedicine(String id, Medicine medicine) {
+    public void saveMedicine(String email, Medicine medicine) {
 
-        if (id == null || medicine == null) {
+        if (email == null || medicine == null) {
             throw new IllegalArgumentException();
         }
 
-        if ( !userRepository.existsById(id) ) {
+        if ( !userRepository.existsByEmail(email) ) {
             throw new NoSuchElementException("Usuário não encontrado!");
         }
 
-        Query query = new Query(Criteria.where("_id").is(id));
+        Query query = new Query(Criteria.where("email").is(email));
         Update update = new Update().push("favorite.medicines", medicine);
         mongoTemplate.updateFirst(query, update, User.class);
     }
 
-    public void saveLocation(String id, Location location) {
+    public void saveLocation(String email, Location location) {
 
-        if (id == null || location == null) {
+        if (email == null || location == null) {
             throw new IllegalArgumentException();
         }
 
-        if ( !userRepository.existsById(id) ) {
+        if ( !userRepository.existsByEmail(email) ) {
             throw new NoSuchElementException("Usuário não encontrado!");
         }
 
-        Query query = new Query(Criteria.where("_id").is(id));
+        Query query = new Query(Criteria.where("email").is(email));
         Update update = new Update().push("favorite.locations", location);
         mongoTemplate.updateFirst(query, update, User.class);
     }
 
-    public void deleteMedicine(String id, String catmatCode) {
+    public void deleteMedicine(String email, String catmatCode) {
 
-        if (id == null || catmatCode == null) {
+        if (email == null || catmatCode == null) {
             throw new IllegalArgumentException();
         }
 
-        if ( !userRepository.existsById(id) ) {
+        if ( !userRepository.existsByEmail(email) ) {
             throw new NoSuchElementException("Usuário não encontrado!");
         }
 
-        Query query = new Query(Criteria.where("_id").is(id));
+        Query query = new Query(Criteria.where("email").is(email));
         Update update = new Update().pull("favorite.medicines",
                 new Query(Criteria.where("catmatCode").is(catmatCode)));
         mongoTemplate.updateFirst(query, update, User.class);
     }
 
-    public void deleteLocation(String id, String cnesCode) {
+    public void deleteLocation(String email, String cnesCode) {
 
-        if (id == null || cnesCode == null) {
+        if (email == null || cnesCode == null) {
             throw new IllegalArgumentException();
         }
 
-        if ( !userRepository.existsById(id) ) {
+        if ( !userRepository.existsByEmail(email) ) {
             throw new NoSuchElementException("Usuário não encontrado!");
         }
 
-        Query query = new Query(Criteria.where("_id").is(id));
+        Query query = new Query(Criteria.where("email").is(email));
         Update update = new Update().pull("favorite.locations",
                 new Query(Criteria.where("cnesCode").is(cnesCode)));
 
