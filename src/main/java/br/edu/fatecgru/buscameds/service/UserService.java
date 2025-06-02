@@ -106,6 +106,17 @@ public class UserService {
         return userRepository.save(newUser);
     }
 
+    public Cookie logout() {
+        // Remove o cookie
+        Cookie cookie = new Cookie("auth_token", null);
+
+        cookie.setHttpOnly(true);
+        cookie.setPath("/");
+        cookie.setMaxAge(0); // Faz o cookie expirar imediatamente
+
+        return cookie;
+    }
+
     public User findById(String id) {
 
         if (id == null) {

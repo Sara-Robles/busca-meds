@@ -1,4 +1,3 @@
-// Realizar Logout
 document.getElementById('logoutButton').addEventListener('click', async function() {
     fetch('/user/logout', {
         method: 'POST',

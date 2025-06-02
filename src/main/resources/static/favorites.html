@@ -8,17 +8,15 @@
     <link rel="stylesheet" href="css/styles.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="js/favorites-crud.js"></script>
-    <script src="js/navbar-component.js"></script>
-
 </head>
 <body>
 <div class="container mt-4">
 
     <header>
-        <navbar-component></navbar-component>
+        <navbar-component>
+        </navbar-component>
+        <button type="button" class="btn btn-primary" id="updateButton">Alterar Conta</button>
+        <button type="button" class="btn btn-primary" id="logoutButton">Logout</button>
     </header>
 
 
@@ -112,5 +110,11 @@
     </div>
 
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="js/favorites-crud.js"></script>
+<script src="js/navbar-component.js"></script>
+<script src="js/user-logout.js"></script>
+
 </body>
 </html>
