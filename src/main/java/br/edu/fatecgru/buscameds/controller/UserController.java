@@ -1,7 +1,6 @@
 package br.edu.fatecgru.buscameds.controller;
 
 import br.edu.fatecgru.buscameds.model.User;
-import br.edu.fatecgru.buscameds.security.JwtFilter;
 import br.edu.fatecgru.buscameds.service.UserDetailsServiceImpl;
 import br.edu.fatecgru.buscameds.service.UserService;
 import jakarta.servlet.http.Cookie;

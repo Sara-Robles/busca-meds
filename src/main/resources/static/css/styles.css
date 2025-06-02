@@ -4,4 +4,11 @@
 
 .card:hover {
     transform: scale(1.05);
+    border-top: 6px solid dodgerblue;
 }
+
+/**,*/
+/**::before,*/
+/**::after {*/
+/*    outline: 3px solid lime;*/
+/*}*/
