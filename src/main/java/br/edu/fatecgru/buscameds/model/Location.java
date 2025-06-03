@@ -2,51 +2,92 @@ package br.edu.fatecgru.buscameds.model;
 
 public class Location {
 
-    private String cnesCode;
-    private String name;
-    private String phone;
-    private Address address;
+    private String codigo_cnes;
+    private String nome_fantasia;
+    private String telefone;
+    private String municipio;
+    private String logradouro;
+    private String numero_endereco;
+    private String bairro;
+    private String cep;
 
 
     public Location() {}
 
-    public Location(String cnes, String name, String phone, Address address) {
-        this.cnesCode = cnes;
-        this.name = name;
-        this.phone = phone;
-        this.address = address;
+    public Location(String codigo_cnes, String nome_fantasia, String telefone, String municipio,
+                    String logradouro, String numero_endereco, String bairro, String cep) {
+        this.codigo_cnes = codigo_cnes;
+        this.nome_fantasia = nome_fantasia;
+        this.telefone = telefone;
+        this.municipio = municipio;
+        this.logradouro = logradouro;
+        this.numero_endereco = numero_endereco;
+        this.bairro = bairro;
+        this.cep = cep;
     }
 
-    public String getCnesCode() {
-        return cnesCode;
+    public String getCodigo_cnes() {
+        return codigo_cnes;
     }
 
-    public void setCnesCode(String cnesCode) {
-        this.cnesCode = cnesCode;
+    public void setCodigo_cnes(String codigo_cnes) {
+        this.codigo_cnes = codigo_cnes;
     }
 
-    public String getName() {
-        return name;
+    public String getNome_fantasia() {
+        return nome_fantasia;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setNome_fantasia(String nome_fantasia) {
+        this.nome_fantasia = nome_fantasia;
     }
 
-    public String getPhone() {
-        return phone;
+    public String getTelefone() {
+        return telefone;
     }
 
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public void setTelefone(String telefone) {
+        this.telefone = telefone;
     }
 
-    public Address getAddress() {
-        return address;
+    public String getMunicipio() {
+        return municipio;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setMunicipio(String municipio) {
+        this.municipio = municipio;
+    }
+
+    public String getLogradouro() {
+        return logradouro;
+    }
+
+    public void setLogradouro(String logradouro) {
+        this.logradouro = logradouro;
+    }
+
+    public String getNumero_endereco() {
+        return numero_endereco;
+    }
+
+    public void setNumero_endereco(String numero_endereco) {
+        this.numero_endereco = numero_endereco;
+    }
+
+    public String getBairro() {
+        return bairro;
+    }
+
+    public void setBairro(String bairro) {
+        this.bairro = bairro;
+    }
+
+    public String getCep() {
+        return cep;
+    }
+
+    public void setCep(String cep) {
+        this.cep = cep;
     }
 
 }

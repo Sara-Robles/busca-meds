@@ -107,7 +107,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             console.log('Estabelecimentos encontrados:', locations);
 
             let favorites = { medicines: [], locations: [] };
-            const userEmail = getUserEmailFromToken();
+            const userEmail = await getUserEmail();
             if (userEmail) {
                 const favoritesResponse = await fetch(`/buscameds/favorites?id=${encodeURIComponent(userEmail)}`);
                 if (favoritesResponse.ok) {
@@ -127,7 +127,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     });
 
     async function toggleFavoriteMedicine(medicine, button) {
-        const userEmail = getUserEmailFromToken();
+        const userEmail = await getUserEmail();
         if (!userEmail) {
             showError('Você precisa estar logado para favoritar itens');
             return;
@@ -136,8 +136,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         const isFavorite = button.querySelector('i').classList.contains('bi-star-fill');
         try {
             if (isFavorite) {
-                const response = await fetch(`/buscameds/favorites/delete-medicine/${encodeURIComponent(userEmail)}/${medicine.codigo_catmat}`, {
+                const response = await fetch(`/buscameds/favorites/delete-medicine/${medicine.codigo_catmat}`, {
                     method: 'DELETE',
+                    credentials: 'include',
                     headers: {
                         'Accept': 'application/json',
                     },
@@ -147,8 +148,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
                 updateButtonState(button, false);
             } else {
-                const response = await fetch(`/buscameds/favorites/save-medicine?id=${encodeURIComponent(userEmail)}`, {
+                const response = await fetch('/buscameds/favorites/save-medicine', {
                     method: 'POST',
+                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
@@ -167,7 +169,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
 
     async function toggleFavoriteLocation(location, button) {
-        const userEmail = getUserEmailFromToken();
+        const userEmail = await getUserEmail();
         if (!userEmail) {
             showError('Você precisa estar logado para favoritar itens');
             return;
@@ -176,8 +178,9 @@ document.addEventListener('DOMContentLoaded', async function() {
         const isFavorite = button.querySelector('i').classList.contains('bi-star-fill');
         try {
             if (isFavorite) {
-                const response = await fetch(`/buscameds/favorites/delete-location/${encodeURIComponent(userEmail)}/${location.cnesCode}`, {
+                const response = await fetch(`/buscameds/favorites/delete-location/${location.codigo_cnes}`, {
                     method: 'DELETE',
+                    credentials: 'include',
                     headers: {
                         'Accept': 'application/json',
                     },
@@ -187,8 +190,9 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
                 updateButtonState(button, false);
             } else {
-                const response = await fetch(`/buscameds/favorites/save-location?id=${encodeURIComponent(userEmail)}`, {
+                const response = await fetch('/buscameds/favorites/save-location', {
                     method: 'POST',
+                    credentials: 'include',
                     headers: {
                         'Content-Type': 'application/json',
                         'Accept': 'application/json',
@@ -360,34 +364,24 @@ document.addEventListener('DOMContentLoaded', async function() {
         return cep.replace(/(\d{5})(\d{3})/, '$1-$2');
     }
 
-    function getUserEmailFromToken() {
-        const cookies = document.cookie.split(';');
-        let token = null;
-        for (const cookie of cookies) {
-            const [name, value] = cookie.trim().split('=');
-            if (name === 'auth_token') {
-                token = value;
-                break;
-            }
-        }
-
-        if (!token) {
-            const metaToken = document.querySelector('meta[name="jwt-token"]');
-            if (metaToken) {
-                token = metaToken.getAttribute('content');
-            }
-        }
-
-        if (!token) return null;
-
+    async function getUserEmail() {
         try {
-            const base64Url = token.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(atob(base64).split('').map(c => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)).join(''));
-            const payload = JSON.parse(jsonPayload);
-            return payload.sub;
-        } catch (e) {
-            console.error('Erro ao decodificar token:', e);
+            const response = await fetch('/user/email', {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`Erro ao recuperar email: ${response.status}`);
+            }
+
+            const data = await response.json();
+            return data.email || data;
+
+        } catch (error) {
+            console.error(error.message);
             return null;
         }
     }

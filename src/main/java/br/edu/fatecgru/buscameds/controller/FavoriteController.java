@@ -9,9 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
-
 @RestController
 @RequestMapping("buscameds")
 @CrossOrigin(origins = "*")
@@ -50,23 +47,23 @@ public class FavoriteController {
     }
 
     // EXCLUI REMÉDIO
-    @DeleteMapping("/favorites/delete-medicine/{catmatCode}")
+    @DeleteMapping("/favorites/delete-medicine/{codigo_catmat}")
     public ResponseEntity<String> deleteMedicine(Authentication authentication,
-                                                 @PathVariable String catmatCode) {
+                                                 @PathVariable String codigo_catmat) {
 
         String email = authentication.getName();
-        favoriteService.deleteMedicine(email, catmatCode);
+        favoriteService.deleteMedicine(email, codigo_catmat);
 
         return ResponseEntity.ok( "Remédio removido dos favoritos." );
     }
 
     //EXCLUI LOCAL
-    @DeleteMapping("/favorites/delete-location/{cnesCode}")
+    @DeleteMapping("/favorites/delete-location/{codigo_cnes}")
     public ResponseEntity<String> deleteLocation(Authentication authentication,
-                                                 @PathVariable String cnesCode) {
+                                                 @PathVariable String codigo_cnes) {
 
         String email = authentication.getName();
-        favoriteService.deleteLocation(email, cnesCode);
+        favoriteService.deleteLocation(email, codigo_cnes);
 
         return ResponseEntity.ok( "Local removido dos favoritos." );
     }

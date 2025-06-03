@@ -83,9 +83,9 @@ public class FavoriteService {
         mongoTemplate.updateFirst(query, update, User.class);
     }
 
-    public void deleteMedicine(String email, String catmatCode) {
+    public void deleteMedicine(String email, String codigo_catmat) {
 
-        if (email == null || catmatCode == null) {
+        if (email == null || codigo_catmat == null) {
             throw new IllegalArgumentException();
         }
 
@@ -95,13 +95,13 @@ public class FavoriteService {
 
         Query query = new Query(Criteria.where("email").is(email));
         Update update = new Update().pull("favorite.medicines",
-                new Query(Criteria.where("catmatCode").is(catmatCode)));
+                new Query(Criteria.where("codigo_catmat").is(codigo_catmat)));
         mongoTemplate.updateFirst(query, update, User.class);
     }
 
-    public void deleteLocation(String email, String cnesCode) {
+    public void deleteLocation(String email, String codigo_cnes) {
 
-        if (email == null || cnesCode == null) {
+        if (email == null || codigo_cnes == null) {
             throw new IllegalArgumentException();
         }
 
@@ -111,7 +111,7 @@ public class FavoriteService {
 
         Query query = new Query(Criteria.where("email").is(email));
         Update update = new Update().pull("favorite.locations",
-                new Query(Criteria.where("cnesCode").is(cnesCode)));
+                new Query(Criteria.where("codigo_cnes").is(codigo_cnes)));
 
         mongoTemplate.updateFirst(query, update, User.class);
     }

@@ -11,7 +11,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("user")
@@ -88,6 +90,16 @@ public class UserController {
         response.addCookie(userService.logout());
 
         return ResponseEntity.ok("Logout realizado com sucesso!");
+    }
+
+    @GetMapping("/email")
+    public ResponseEntity<?> getEmail(Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+            Map<String, String> response = new HashMap<>();
+            response.put("email", authentication.getName());
+            return ResponseEntity.ok(response); // Retorna em formato JSON
+        }
+        return ResponseEntity.status(401).body("Usuário não autenticado");
     }
 
 }
