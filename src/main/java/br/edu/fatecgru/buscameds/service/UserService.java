@@ -45,14 +45,29 @@ public class UserService {
         return users;
     }
 
-    public void updateByEmail(User user, String email) {
-        if (user == null || email == null) {
-            throw new IllegalArgumentException();
+    public void updateByEmail(User user) {
+        if (user == null || user.getEmail() == null) {
+            throw new IllegalArgumentException("Usuário ou email não podem ser nulos.");
         }
 
-        if (!userRepository.existsByEmail(email)) {
+        User existingUser = userRepository.findByEmail(user.getEmail());
+        if (existingUser == null) {
             throw new NoSuchElementException("Usuário não encontrado!");
         }
+
+        // Atualiza apenas os campos fornecidos
+        if (user.getName() != null) {
+            existingUser.setName(user.getName());
+        }
+        if (user.getPassword() != null) {
+            existingUser.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
+        if (user.getFavorite() != null) {
+            existingUser.setFavorite(user.getFavorite());
+        }
+
+        // Salva o usuário atualizado
+        userRepository.save(existingUser);
     }
 
     public void delete(String email) {

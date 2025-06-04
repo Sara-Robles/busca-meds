@@ -6,8 +6,10 @@ class NavbarComponent extends HTMLElement {
                 <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
                     <div class="navbar-nav">
                         <a class="nav-link" href="/buscameds/home">Home</a>
-                        <a class="nav-link" href="/buscameds/user/login">Login</a>
                         <a class="nav-link" href="/buscameds/favorites">Favoritos</a>
+                        <a class="nav-link" href="/buscameds/user/login" id="loginLink">Login</a>
+                        <button type="button" class="btn btn-primary d-none" id="updatePageButton">Alterar Conta</button>
+                        <button type="button" class="btn btn-primary d-none" id="logoutButton">Logout</button>
                     </div>
                 </div>
             </div>

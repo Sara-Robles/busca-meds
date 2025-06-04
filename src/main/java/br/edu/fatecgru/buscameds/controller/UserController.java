@@ -33,11 +33,9 @@ public class UserController {
 
 
     @PutMapping("/update")
-    public ResponseEntity<String> update(@RequestBody User userUpdate, Authentication authentication) {
+    public ResponseEntity<String> update(@RequestBody User userUpdate) {
 
-        //User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
-
-        userService.updateByEmail(userUpdate, authentication.getName());
+        userService.updateByEmail(userUpdate);
         return ResponseEntity.ok("Usuário atualizado com sucesso!");
     }
 

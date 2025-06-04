@@ -21,8 +21,6 @@
     <header>
         <navbar-component>
         </navbar-component>
-        <button type="button" class="btn btn-primary" id="updateButton">Alterar Conta</button>
-        <button type="button" class="btn btn-primary" id="logoutButton">Logout</button>
     </header>
 
 
@@ -30,12 +28,16 @@
 
         <h2 class="mb-4 text-center mb-5">Favoritos</h2>
 
+        <div class="alertContainer">
+            <!-- O alerta de erro será exibido aqui-->
+        </div>
+
         <div class="row">
 
 
             <div class="col">
 
-                <h3 class="mb-3 text-center">Medicamentos</h3>
+                <h3 class="mb-3 text-center" id="medicineTitle">Medicamentos</h3>
 
                 <template id="medicine-card-template">
 
@@ -59,7 +61,7 @@
 
             <div class="col">
 
-                <h3 class="mb-3 text-center">Estabelecimentos</h3>
+                <h3 class="mb-3 text-center" id="locationTitle">Estabelecimentos</h3>
 
 
                 <template id="location-card-template">
@@ -100,7 +102,7 @@
 
                                 <button id="saveButton" type="button"
                                         class="btn btn-sm btn-outline-warning">
-                                    <i class="bi bi-star">Salvar</i>
+                                    <i class="bi bi-star-fill"></i>
                                 </button>
 
                             </div>

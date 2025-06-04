@@ -1,5 +1,8 @@
 document.addEventListener('DOMContentLoaded', async function() {
 
+    // Oculta página de login
+    document.getElementById('loginLink').classList.add('d-none');
+
     const nameInput = document.getElementById('nameInput');
     const emailInput = document.getElementById('emailInput');
 

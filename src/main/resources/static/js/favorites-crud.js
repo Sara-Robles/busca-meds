@@ -1,10 +1,26 @@
     document.addEventListener('DOMContentLoaded', async function() {
+
+        // Apresenta os botões de alterar conta e logout
+        document.getElementById('updatePageButton').classList.remove('d-none');
+        document.getElementById('logoutButton').classList.remove('d-none');
+
         // Extract user email
         let userEmail = await getUserEmail();
         if (!userEmail) {
             showError('Você precisa estar logado para ver os favoritos');
             console.error('Usuário não autenticado');
+            document.getElementById('loginLink').classList.remove('d-none');
+
+            // Oculta títulos (medicamentos e locais)
+            document.getElementById('medicineTitle').classList.add('d-none');
+            document.getElementById('locationTitle').classList.add('d-none');
             return;
+        } else {
+            // Oculta página de login
+            document.getElementById('loginLink').classList.add('d-none');
+
+            document.getElementById('medicineTitle').classList.remove('d-none');
+            document.getElementById('locationTitle').classList.remove('d-none');
         }
 
         // Extract user email from response
@@ -204,13 +220,11 @@
             if (isFavorite) {
                 button.classList.remove('btn-outline-warning');
                 button.classList.add('btn-warning');
-                button.querySelector('i').textContent = 'Desfavoritar';
-                button.querySelector('i').className = 'bi-star';
+                button.querySelector('i').className = 'bi-star-fill';
             } else {
                 button.classList.remove('btn-warning');
                 button.classList.add('btn-outline-warning');
-                button.querySelector('i').textContent = 'Favoritar';
-                button.querySelector('i').className = 'bi-star-fill';
+                button.querySelector('i').className = 'bi-star';
             }
         }
 
@@ -219,7 +233,7 @@
             const errorDiv = document.createElement('div');
             errorDiv.className = 'alert alert-danger mt-3';
             errorDiv.textContent = message;
-            document.querySelector('.container').prepend(errorDiv);
+            document.querySelector('.alertContainer').prepend(errorDiv);
             setTimeout(() => errorDiv.remove(), 3000);
         }
 
@@ -232,7 +246,7 @@
         // Initial fetch of favorites
         await fetchFavorites();
 
-        document.getElementById('updateButton').addEventListener('click', async function () {
+        document.getElementById('updatePageButton').addEventListener('click', async function () {
             window.location.href = '/buscameds/user/update';
         });
 

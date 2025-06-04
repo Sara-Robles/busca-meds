@@ -23,8 +23,12 @@ document.addEventListener('DOMContentLoaded', async function() {
                 if (response.ok) {
                     alert('Login bem-sucedido!');
 
+                    // Oculta página de login
+                    document.getElementById('loginLink').classList.add('d-none');
+
                     // Redirecionar para favoritos
                     window.location.href = '/buscameds/favorites';
+
 
                 } else {
                     alert('Usuário ou senha inválidos');
