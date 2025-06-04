@@ -55,17 +55,17 @@ public class UserService {
         }
     }
 
-    public void delete(String id) {
+    public void delete(String email) {
 
-        if (id == null) {
+        if (email == null) {
             throw new IllegalArgumentException();
         }
 
-        if (!userRepository.existsById(id)) {
+        if (!userRepository.existsByEmail(email)) {
             throw new NoSuchElementException("Usuário não encontrado!");
         }
 
-        userRepository.deleteById(id);
+        userRepository.delete(userRepository.findByEmail(email));
     }
 
     public Cookie login(String email, String password) {

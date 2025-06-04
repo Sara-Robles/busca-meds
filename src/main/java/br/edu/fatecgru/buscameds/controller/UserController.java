@@ -41,10 +41,10 @@ public class UserController {
         return ResponseEntity.ok("Usuário atualizado com sucesso!");
     }
 
-    @DeleteMapping("/delete/{id}")
-    public ResponseEntity<String> delete(@PathVariable String id) {
+    @DeleteMapping("/delete/{email}")
+    public ResponseEntity<String> delete(@PathVariable String email) {
 
-        userService.delete(id);
+        userService.delete(email);
         return ResponseEntity.ok("Usuário removido com sucesso!");
 
     }

@@ -36,7 +36,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         fetch('/user/update', {
             method: 'PUT',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
             },
 
             // Permite enviar e receber cookies
@@ -47,16 +48,52 @@ document.addEventListener('DOMContentLoaded', async function() {
         })
             .then(response => {
                 if (response.ok) {
-                    alert('Atualização bem-sucedida!');
+                    ('Atualização bem-sucedida!');
 
                 } else {
-                    alert('Não foi possível atualizar os dados!');
+                    showError('Não foi possível atualizar os dados!');
                 }
             })
             .catch(error => {
                 console.error('Erro na requisição:', error);
             });
     });
+
+    // EXCLUIR USUÁRIO
+    document.getElementById('deleteButton').addEventListener('click', async function() {
+        try {
+            const email = emailInput.value;
+            const resposne = fetch(`/user/delete/${email}`, {
+                method: 'DELETE',
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json'
+                }
+            });
+
+            if (!response.ok) {
+                showError('Não foi possível excluir o usuário!');
+            }
+
+        } catch (error) {
+            console.error('Erro na requisição:', error);
+        }
+    });
+
+    function showError(message) {
+        const errorElement = document.getElementById('errorMessage');
+        if (errorElement) {
+            errorElement.textContent = message;
+            errorElement.classList.remove('d-none');
+        }
+    }
+
+    function hideError() {
+        const errorElement = document.getElementById('errorMessage');
+        if (errorElement) {
+            errorElement.classList.add('d-none');
+        }
+    }
 
     async function getUserEmail() {
         try {
