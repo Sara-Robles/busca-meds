@@ -1,22 +1,25 @@
-document.getElementById('logoutButton').addEventListener('click', async function() {
-    fetch('/user/logout', {
-        method: 'POST',
+document.addEventListener('DOMContentLoaded', async function() {
 
-        // Permite enviar e receber cookies
-        credentials: 'include'
+    document.getElementById('logoutButton').addEventListener('click', async function () {
+        fetch('/user/logout', {
+            method: 'POST',
 
-    })
-        .then(response => {
-            if (response.ok) {
-                alert('Logout realizado com sucesso!');
+            // Permite enviar e receber cookies
+            credentials: 'include'
 
-                // Redireciona para home
-                window.location.href = '/home';
-            } else {
-                alert('Erro ao fazer logout!');
-            }
         })
-        .catch(error => {
-            console.error('Erro na requisição:', error);
-        });
+            .then(response => {
+                if (response.ok) {
+                    alert('Logout realizado com sucesso!');
+
+                    // Redireciona para home
+                    window.location.href = '/buscameds/home';
+                } else {
+                    alert('Erro ao fazer logout!');
+                }
+            })
+            .catch(error => {
+                console.error('Erro na requisição:', error);
+            });
+    });
 });

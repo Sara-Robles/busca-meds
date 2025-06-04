@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             let favorites = { medicines: [], locations: [] };
             const userEmail = await getUserEmail();
             if (userEmail) {
-                const favoritesResponse = await fetch(`/buscameds/favorites?id=${encodeURIComponent(userEmail)}`);
+                const favoritesResponse = await fetch('/favorites/list');
                 if (favoritesResponse.ok) {
                     favorites = await favoritesResponse.json();
                 }
@@ -136,7 +136,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const isFavorite = button.querySelector('i').classList.contains('bi-star-fill');
         try {
             if (isFavorite) {
-                const response = await fetch(`/buscameds/favorites/delete-medicine/${medicine.codigo_catmat}`, {
+                const response = await fetch(`/favorites/delete-medicine/${medicine.codigo_catmat}`, {
                     method: 'DELETE',
                     credentials: 'include',
                     headers: {
@@ -148,7 +148,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
                 updateButtonState(button, false);
             } else {
-                const response = await fetch('/buscameds/favorites/save-medicine', {
+                const response = await fetch('/favorites/save-medicine', {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
@@ -178,7 +178,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         const isFavorite = button.querySelector('i').classList.contains('bi-star-fill');
         try {
             if (isFavorite) {
-                const response = await fetch(`/buscameds/favorites/delete-location/${location.codigo_cnes}`, {
+                const response = await fetch(`/favorites/delete-location/${location.codigo_cnes}`, {
                     method: 'DELETE',
                     credentials: 'include',
                     headers: {
@@ -190,7 +190,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
                 updateButtonState(button, false);
             } else {
-                const response = await fetch('/buscameds/favorites/save-location', {
+                const response = await fetch('/favorites/save-location', {
                     method: 'POST',
                     credentials: 'include',
                     headers: {

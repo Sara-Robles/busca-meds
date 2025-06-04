@@ -7,6 +7,29 @@
             return;
         }
 
+        // Extract user email from response
+        async function getUserEmail() {
+            try {
+                const response = await fetch('/user/email', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json',
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error(`Erro ao recuperar email: ${response.status}`);
+                }
+
+                const data = await response.json();
+                return data.email || data;
+
+            } catch (error) {
+                console.error(error.message);
+                return null;
+            }
+        }
+
         // Containers for medicines and locations
         const medicinesContainer = document.createElement('div');
         medicinesContainer.className = 'row';
@@ -19,7 +42,7 @@
         // Fetch favorites on page load
         async function fetchFavorites() {
             try {
-                const response = await fetch('/buscameds/favorites', {
+                const response = await fetch('/favorites/list', {
                     method: 'GET',
                     credentials: 'include',
                     headers: {
@@ -105,7 +128,7 @@
             const isFavorite = button.classList.contains('btn-warning');
             try {
                 if (isFavorite) {
-                    const response = await fetch(`/buscameds/favorites/delete-medicine/${encodeURIComponent(userEmail)}/${medicine.codigo_catmat}`, {
+                    const response = await fetch(`/favorites/delete-medicine/${medicine.codigo_catmat}`, {
                         method: 'DELETE',
                         headers: {
                             'Accept': 'application/json',
@@ -117,7 +140,7 @@
                     updateButtonState(button, false);
                     fetchFavorites();
                 } else {
-                    const response = await fetch(`/buscameds/favorites/save-medicine?id=${encodeURIComponent(userEmail)}`, {
+                    const response = await fetch('/favorites/save-medicine', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -142,7 +165,7 @@
             const isFavorite = button.classList.contains('btn-warning');
             try {
                 if (isFavorite) {
-                    const response = await fetch(`/buscameds/favorites/delete-location/${location.codigo_cnes}`, {
+                    const response = await fetch(`/favorites/delete-location/${location.codigo_cnes}`, {
                         method: 'DELETE',
                         credentials: 'include',
                         headers: {
@@ -155,7 +178,7 @@
                     updateButtonState(button, false);
                     await fetchFavorites();
                 } else {
-                    const response = await fetch('/buscameds/favorites/save-location', {
+                    const response = await fetch('/favorites/save-location', {
                         method: 'POST',
                         credentials: 'include',
                         headers: {
@@ -182,10 +205,12 @@
                 button.classList.remove('btn-outline-warning');
                 button.classList.add('btn-warning');
                 button.querySelector('i').textContent = 'Desfavoritar';
+                button.querySelector('i').className = 'bi-star';
             } else {
                 button.classList.remove('btn-warning');
                 button.classList.add('btn-outline-warning');
                 button.querySelector('i').textContent = 'Favoritar';
+                button.querySelector('i').className = 'bi-star-fill';
             }
         }
 
@@ -204,30 +229,11 @@
             return cep.replace(/(\d{5})(\d{3})/, '$1-$2');
         }
 
-        // Extract user email from response
-        async function getUserEmail() {
-            try {
-                const response = await fetch('/user/email', {
-                    method: 'GET',
-                    credentials: 'include',
-                    headers: {
-                        'Accept': 'application/json',
-                    },
-                });
-                if (!response.ok) {
-                    throw new Error(`Erro ao recuperar email: ${response.status}`);
-                }
-
-                const data = await response.json();
-                return data.email || data;
-
-            } catch (error) {
-                console.error(error.message);
-                return null;
-            }
-        }
-
         // Initial fetch of favorites
         await fetchFavorites();
+
+        document.getElementById('updateButton').addEventListener('click', async function () {
+            window.location.href = '/buscameds/user/update';
+        });
 
     });

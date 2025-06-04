@@ -1,13 +1,14 @@
 document.addEventListener('DOMContentLoaded', async function() {
 
-    // LOGIN
-    document.getElementById('loginButton').addEventListener('click', async function () {
+    // CADASTRAR NOVO USUÁRIO
+    document.getElementById('registerButton').addEventListener('click', async function(){
 
         // Atribui os valores dos inputs nas variáveis
-        const username = document.getElementById('emailInput').value;
+        const name = document.getElementById('nameInput').value;
+        const email = document.getElementById('emailInput').value;
         const password = document.getElementById('passwordInput').value;
 
-        fetch('/user/login', {
+        fetch('/user/registration', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -17,27 +18,21 @@ document.addEventListener('DOMContentLoaded', async function() {
             credentials: 'include',
 
             // JSON a ser passado para o back-end
-            body: JSON.stringify({email: username, password: password})
+            body: JSON.stringify({ name: name, email: email, password: password })
         })
             .then(response => {
                 if (response.ok) {
-                    alert('Login bem-sucedido!');
+                    alert('Cadastro bem-sucedido!');
 
-                    // Redirecionar para favoritos
-                    window.location.href = '/buscameds/favorites';
+                    // Redirecionar para login
+                    window.location.href = '/buscameds/user/login';
 
                 } else {
-                    alert('Usuário ou senha inválidos');
+                    alert('Não foi possível realizar o cadastro!');
                 }
             })
             .catch(error => {
                 console.error('Erro na requisição:', error);
             });
     });
-
-    // CRIAR NOVA CONTA
-    document.getElementById('registerPageButton').addEventListener('click', async function () {
-        window.location.href = '/buscameds/user/registration';
-    });
-
 });

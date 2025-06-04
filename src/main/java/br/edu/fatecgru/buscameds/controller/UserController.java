@@ -31,22 +31,13 @@ public class UserController {
         return ResponseEntity.ok(userService.findAll());
     }
 
-    @GetMapping("/update")
-    public ResponseEntity<?> updatePage(Authentication authentication) {
-
-        UserDetails userDetails = userDetailsService.loadUserByUsername(authentication.getName());
-
-        try {
-            return ResponseEntity.ok(userDetails);
-        } catch (Exception ex) {
-            return ResponseEntity.ok("Erro ao carregar dados do usuário! " + ex.getMessage());
-        }
-    }
 
     @PutMapping("/update")
-    public ResponseEntity<String> update(@RequestBody User user) {
+    public ResponseEntity<String> update(@RequestBody User userUpdate, Authentication authentication) {
 
-        userService.updateByEmail(user, user.getEmail());
+        //User user = (User) userDetailsService.loadUserByUsername(authentication.getName());
+
+        userService.updateByEmail(userUpdate, authentication.getName());
         return ResponseEntity.ok("Usuário atualizado com sucesso!");
     }
 
@@ -97,6 +88,20 @@ public class UserController {
         if (authentication != null && authentication.isAuthenticated()) {
             Map<String, String> response = new HashMap<>();
             response.put("email", authentication.getName());
+            return ResponseEntity.ok(response); // Retorna em formato JSON
+        }
+        return ResponseEntity.status(401).body("Usuário não autenticado");
+    }
+
+    @GetMapping("/data")
+    public ResponseEntity<?> returnUser(Authentication authentication) {
+        if (authentication != null && authentication.isAuthenticated()) {
+
+            Object user = userService.findByEmail(authentication.getName());
+
+            Map<String, Object> response = new HashMap<>();
+            response.put("data", user);
+
             return ResponseEntity.ok(response); // Retorna em formato JSON
         }
         return ResponseEntity.status(401).body("Usuário não autenticado");

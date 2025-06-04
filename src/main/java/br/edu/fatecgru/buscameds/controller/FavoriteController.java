@@ -10,7 +10,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("buscameds")
 @CrossOrigin(origins = "*")
 
 public class FavoriteController {
@@ -19,7 +18,7 @@ public class FavoriteController {
     private FavoriteService favoriteService;
 
     // EXIBE FAVORITOS DO USUÁRIO
-    @GetMapping("/favorites")
+    @GetMapping("/favorites/list")
     public ResponseEntity<?> getFavorites(Authentication authentication) {
         String email = authentication.getName();
         Favorite favorites = favoriteService.getFavorites(email);
