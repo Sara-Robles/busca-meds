@@ -33,61 +33,60 @@
         <p id="infoMessage" class="alert alert-info mt-2 d-none"></p>
 
         <div class="locationsContainer" id="locationsContainer">
-            <template id="location-card-template">
-
-                    <div class="card h-100 shadow-sm mb-4 card-hover">
-                        <div class="card-body">
-
-                            <h5 class="card-title text-primary mb-4" data-field="name">Nome do Estabelecimento</h5>
-                            <div class="mb-3">
-                                <h6 class="card-subtitle mb-2 text-info-emphasis">
-                                    <i class="bi bi-geo-alt-fill"></i> Endereço
-                                </h6>
-                                <p class="card-text mb-1">
-                                    <span data-field="street">Rua</span>,
-                                    <span data-field="number">123</span>
-                                </p>
-                                <p class="card-text mb-1">
-                                    <span data-field="neighborhood">Bairro</span>
-                                </p>
-                                <p class="card-text mb-1">
-                                    <span data-field="city">Cidade</span> - <span data-field="state">UF</span>
-                                </p>
-                                <p class="card-text">
-                                    <strong>CEP:</strong> <span data-field="cep">12345-678</span>
-                                </p>
-                            </div>
-
-                            <div class="mb-3">
-                                <h6 class="card-subtitle mb-2 text-info-emphasis">
-                                    <i class="bi bi-telephone-fill"></i> Contato
-                                </h6>
-                                <p class="card-text">
-                                    <span data-field="phone">Telefone</span>
-                                </p>
-                            </div>
-
-                            <div class="mb-3 d-flex">
-                                <h6 class="text-primary-emphasis">
-                                    <i class="bi bi-capsule me-1"></i>Medicamento: 
-                                </h6>
-                                <h6 class="card-text">
-                                    <span data-field="medicine">Nome</span>
-                                </h6>
-                            </div>
-
-                            <button id="saveButton" type="button"
-                                    class="btn btn-sm btn-outline-warning">
-                                <i class="bi bi-star-fill"></i>
-                            </button>
-
-                        </div>
-                    </div>
-
-            </template>
-
         </div>
 
+        <template id="location-card-template">
+
+            <div class="card h-100 shadow-sm mb-4 card-hover">
+                <div class="card-body">
+
+                    <h5 class="card-title text-primary mb-4" data-field="name">Nome do Estabelecimento</h5>
+                    <div class="mb-3">
+                        <h6 class="card-subtitle mb-2 text-info-emphasis">
+                            <i class="bi bi-geo-alt-fill"></i> Endereço
+                        </h6>
+                        <p class="card-text mb-1">
+                            <span data-field="street">Rua</span>,
+                            <span data-field="number">123</span>
+                        </p>
+                        <p class="card-text mb-1">
+                            <span data-field="neighborhood">Bairro</span>
+                        </p>
+                        <p class="card-text mb-1">
+                            <span data-field="city">Cidade</span> - <span data-field="state">UF</span>
+                        </p>
+                        <p class="card-text">
+                            <strong>CEP:</strong> <span data-field="cep">12345-678</span>
+                        </p>
+                    </div>
+
+                    <div class="mb-3">
+                        <h6 class="card-subtitle mb-2 text-info-emphasis">
+                            <i class="bi bi-telephone-fill"></i> Contato
+                        </h6>
+                        <p class="card-text">
+                            <span data-field="phone">Telefone</span>
+                        </p>
+                    </div>
+
+                    <div class="mb-3 d-flex">
+                        <h6 class="text-primary-emphasis">
+                            <i class="bi bi-capsule me-1"></i>Medicamento: 
+                        </h6>
+                        <h6 class="card-text">
+                            <span data-field="medicine">Nome</span>
+                        </h6>
+                    </div>
+
+                    <button id="saveButton" type="button"
+                            class="btn btn-sm btn-outline-warning">
+                        <i class="bi bi-star-fill"></i>
+                    </button>
+
+                </div>
+            </div>
+
+        </template>
 
 
     </div>

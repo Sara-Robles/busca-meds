@@ -59,6 +59,7 @@
        // APRESENTA FAVORITOS
         function displayFavorites(favorites) {
             const locationsContainer = document.getElementById('locationsContainer');
+            locationsContainer.innerHTML = '';
 
             if (favorites.locations && favorites.locations.length > 0) {
                 favorites.locations.forEach(location => {
@@ -107,9 +108,11 @@
                         },
                     });
                     if (!response.ok) {
-                        throw new Error(`Erro ao remover local: ${response.status}`);
+                        showAlert('Nenhum locaol favoritado', 'info');
                     }
+                    button.closest('.card').remove();
                     updateButtonState(button, false);
+                    showAlert(`Local '${location.nome_fantasia}' removido`, 'info');
                     await fetchFavorites();
                 } else {
                     const response = await fetch('/favorites/save-location', {
