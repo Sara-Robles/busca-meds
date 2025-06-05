@@ -105,16 +105,13 @@ document.addEventListener('DOMContentLoaded', async function() {
             return;
         }
 
-        // Pega bairro do input para enviar na requisição
-        const neighborhoodInput = document.getElementById('neighborhoodInput');
-        const neighborhood = neighborhoodInput ? neighborhoodInput.value.trim() : '';
 
         try {
             showLoading(true); // apresenta status "carregando"
             hideAlert(); // esconde alertas
 
             // REQUISIÇÃO PARA ENDPOINT DA API BNA FAR (/search-locations)
-            const response = await fetch(`/search-locations?catmatCode=${selectedCatmat}&neighborhood=${encodeURIComponent(neighborhood)}`);
+            const response = await fetch(`/search-locations?catmatCode=${selectedCatmat}`);
             if (!response.ok) {
                 throw new Error(`Erro na requisição: ${response.status}`);
             }
@@ -210,7 +207,6 @@ document.addEventListener('DOMContentLoaded', async function() {
     // APLICA FILTROS DE BUSCA
     function applyFilters(locations) {
         const cepFilter = document.getElementById('cepInput')?.value.trim().replace(/\D/g, '') || '';
-        const neighborhoodFilter = document.getElementById('neighborhoodInput')?.value.trim().toLowerCase() || '';
 
         let filtered = locations;
 
@@ -221,12 +217,6 @@ document.addEventListener('DOMContentLoaded', async function() {
             });
         }
 
-        if (neighborhoodFilter) {
-            filtered = filtered.filter(location => {
-                const locationNeighborhood = (location.bairro || '').toLowerCase();
-                return locationNeighborhood.includes(neighborhoodFilter);
-            });
-        }
 
         return filtered;
     }
@@ -302,16 +292,14 @@ document.addEventListener('DOMContentLoaded', async function() {
     function showLoading(show) {
         const medicineInput = document.getElementById('medicineInput');
         const cepInput = document.getElementById('cepInput');
-        const neighborhoodInput = document.getElementById('neighborhoodInput');
         const button = document.getElementById('searchButton');
         const searchText = document.getElementById('searchText');
         const spinner = document.getElementById('spinner');
 
-        if (!medicineInput || !cepInput || !neighborhoodInput || !button || !searchText || !spinner) {
+        if (!medicineInput || !cepInput || !button || !searchText || !spinner) {
             console.error('Elementos de loading não encontrados:', {
                 medicineInput: !!medicineInput,
                 cepInput: !!cepInput,
-                neighborhoodInput: !!neighborhoodInput,
                 button: !!button,
                 searchText: !!searchText,
                 spinner: !!spinner
@@ -322,14 +310,12 @@ document.addEventListener('DOMContentLoaded', async function() {
         if (show) {
             medicineInput.disabled = true;
             cepInput.disabled = true;
-            neighborhoodInput.disabled = true;
             button.disabled = true;
             searchText.textContent = 'Buscando...';
             spinner.classList.remove('d-none');
         } else {
             medicineInput.disabled = false;
             cepInput.disabled = false;
-            neighborhoodInput.disabled = false;
             button.disabled = false;
             searchText.textContent = 'Buscar Estabelecimentos';
             spinner.classList.add('d-none');
