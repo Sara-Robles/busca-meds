@@ -36,7 +36,7 @@ public class FavoriteController {
     }
 
     // SALVA LOCAL
-        @PostMapping("/favorites/save-location")
+    @PostMapping("/favorites/save-location")
     public ResponseEntity<String> saveLocation(Authentication authentication,
                                                @RequestBody Location location) {
         String email = authentication.getName();

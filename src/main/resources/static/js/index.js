@@ -1,54 +1,65 @@
-let medicamentos = [];
+let tabelaCatmat = [];
 let selectedCatmat = '';
 let selectedMedicine = null;
 
 document.addEventListener('DOMContentLoaded', async function() {
+
+    const medicineInput = document.getElementById('medicineInput');
+
+    const favMedicine = localStorage.getItem('favMedicine');
+
+    console.log(favMedicine);
+
+    if(favMedicine) {
+        medicineInput.textContent = favMedicine;
+    }
+
+    // APRESENTA OU REMOVE OPÇÃO DE LOGIN
+    let userEmail = await getUserEmail();
+    if (!userEmail) {
+        // Oculta página de login
+        document.getElementById('loginLink').classList.remove('d-none');
+    } else {
+        document.getElementById('loginLink').classList.add('d-none');
+    }
+
+    // CARREGA TABELA CATMAT
     try {
         const response = await fetch('https://raw.githubusercontent.com/gabriellabueno/tabela-medicamentos-catmat/refs/heads/main/medicamentos-tabela-catmat.json');
         if (!response.ok) {
             throw new Error(`HTTP error! Status: ${response.status}`);
         }
-        medicamentos = await response.json();
-        console.log('Tabela CATMAT carregada:', medicamentos.length, 'medicamentos');
+        tabelaCatmat = await response.json(); // armazena medicamentos no array
+
+        console.log('Tabela CATMAT carregada:', tabelaCatmat.length, 'medicamentos');
     } catch (error) {
         console.error('Erro ao carregar tabela CATMAT:', error);
-        showError('Erro ao carregar dados dos medicamentos');
         return;
     }
 
-    const medicineInput = document.getElementById('medicineInput');
-    const suggestionsList = document.getElementById('suggestionsList');
-    const searchButton = document.getElementById('searchButton');
 
-    if (!medicineInput || !suggestionsList || !searchButton) {
-        console.error('Elementos DOM não encontrados:', {
-            medicineInput: !!medicineInput,
-            suggestionsList: !!suggestionsList,
-            searchButton: !!searchButton
-        });
-        showError('Erro: Elementos de busca não encontrados na página');
-        return;
-    }
-
+    // APRESENTAR SUGESTÕES AO DIGITAR - campo de input de medicamentos
     medicineInput.addEventListener('input', function(e) {
         const query = e.target.value.toLowerCase().trim();
 
+        // Desconsidera inputs menores que 2 caracteres
         if (query.length < 2) {
             suggestionsList.innerHTML = '';
             suggestionsList.style.display = 'none';
             return;
         }
 
-        console.log('Filtrando medicamentos com query:', query);
-        const matches = medicamentos.filter(med => {
+        // Filtra o que foi digitado e compara com array "tabelaCatmat"
+        // armazena resultados em "suggestions"
+        const suggestions = tabelaCatmat.filter(med => {
             const principioAtivo = med.principio_ativo ? med.principio_ativo.toLowerCase() : '';
             return principioAtivo.includes(query);
         }).slice(0, 10);
 
-        console.log('Sugestões encontradas:', matches);
-
-        if (matches.length > 0) {
-            suggestionsList.innerHTML = matches.map(med =>
+        // Se houver alguma sugestão no array
+        if (suggestions.length > 0) {
+            // Cria li (list item) para sugestão e adiciona no HTML (ul)
+            suggestionsList.innerHTML = suggestions.map(med =>
                 `<li class="list-group-item list-group-item-action suggestion-item" 
                      data-catmat="${med.codigo_catmat}" 
                      data-name="${med.principio_ativo}">
@@ -63,49 +74,69 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     });
 
+    const suggestionsList = document.getElementById('suggestionsList');
+
+    // PEGAR MEDICAMENTO SELECIONADO DA LISTA DE SUGESTÕES
+    // EVENTO DE CLICK NA SUGESTÃO
     suggestionsList.addEventListener('click', function(e) {
+
         const suggestionItem = e.target.closest('.suggestion-item');
+
         if (suggestionItem) {
+            // Pega dados do medicamento clicado
             const catmat = suggestionItem.getAttribute('data-catmat');
             const name = suggestionItem.getAttribute('data-name');
 
-            medicineInput.value = name;
+            medicineInput.value = name; // Adiciona nome no campo de inpu
             selectedCatmat = catmat;
-            selectedMedicine = medicamentos.find(med => med.codigo_catmat === catmat);
-            suggestionsList.style.display = 'none';
+            // busca objeto medicamento a partir do codigo catmat do item selecionado
+            selectedMedicine = tabelaCatmat.find(med => med.codigo_catmat === catmat);
+            suggestionsList.style.display = 'none'; // Esconde lista
 
             console.log('Medicamento selecionado:', name, 'CATMAT:', catmat);
         }
     });
 
+    const searchButton = document.getElementById('searchButton');
+
+    // INICIAR BUSCA DE LOCAIS
+    // EVENTO DE CLICK NO BOTÃO BUSCAR
     searchButton.addEventListener('click', async function() {
+
         if (!selectedCatmat) {
-            showError('Por favor, selecione um medicamento da lista de sugestões');
+            const message = 'Por favor, selecione um medicamento da lista de sugestões';
+            showAlert(message, 'error');
             return;
         }
 
+        // Pega bairro do input para enviar na requisição
         const neighborhoodInput = document.getElementById('neighborhoodInput');
         const neighborhood = neighborhoodInput ? neighborhoodInput.value.trim() : '';
 
+        // Pega elementos do template de locais
+        const favCard = document.getElementById("favCard");
+        favCard.classList.remove("d-none");
+
+        // Pega elemento para car de medicamento selecionado
+        const favMedicine = document.getElementById("favMedicine");
+        favMedicine.textContent = medicineInput.value;
+
         try {
-            showLoading(true);
-            hideError();
+            showLoading(true); // apresenta status "carregando"
+            hideAlert(); // esconde alertas
 
-            console.log('Buscando estabelecimentos para CATMAT:', selectedCatmat, 'Neighborhood:', neighborhood);
-
+            // REQUISIÇÃO PARA ENDPOINT DA API BNA FAR (/search-locations)
             const response = await fetch(`/search-locations?catmatCode=${selectedCatmat}&neighborhood=${encodeURIComponent(neighborhood)}`);
-
             if (!response.ok) {
                 throw new Error(`Erro na requisição: ${response.status}`);
             }
-
             const locations = await response.json();
 
             // Armazena os locais para usar em outros JS:
             localStorage.setItem('locations', JSON.stringify(locations));
-
             console.log('Estabelecimentos encontrados:', locations);
 
+            // Pega favoritos do usuário
             let favorites = { medicines: [], locations: [] };
             const userEmail = await getUserEmail();
             if (userEmail) {
@@ -115,28 +146,34 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
             }
 
+            // Aplica filtros de busca
             const filteredLocations = applyFilters(locations);
+            // Apresenta resultados
             displayResults(filteredLocations, favorites);
 
         } catch (error) {
             console.error('Erro ao buscar estabelecimentos:', error);
-            showError('Erro ao buscar estabelecimentos. Tente novamente.');
+            const message = 'Erro ao buscar estabelecimentos. Tente novamente.';
+            showAlert(message, 'error');
         } finally {
             showLoading(false);
         }
     });
 
+    // METODO PARA FAVORITAR E DESFAVORITAR MEDICAMENTOS
     async function toggleFavoriteMedicine(medicine, button) {
         const userEmail = await getUserEmail();
         if (!userEmail) {
-            showError('Você precisa estar logado para favoritar itens');
+            const message = 'Você precisa estar logado para favoritar itens';
+            showAlert(message, 'info');
             return;
         }
-
+        // Verifica se elemento esta favoritado
         const isFavorite = button.querySelector('i').classList.contains('bi-star-fill');
         try {
+            // Se sim, desfavorita
             if (isFavorite) {
-                const response = await fetch(`/favorites/delete-medicine/${medicine.codigo_catmat}`, {
+                const response = await fetch(`/favorites/delete-medicine/${medicine.catmat_code}`, {
                     method: 'DELETE',
                     credentials: 'include',
                     headers: {
@@ -147,7 +184,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     throw new Error(`Erro ao remover medicamento: ${response.status}`);
                 }
                 updateButtonState(button, false);
-            } else {
+            } else { // Se não, favorita
                 const response = await fetch('/favorites/save-medicine', {
                     method: 'POST',
                     credentials: 'include',
@@ -164,19 +201,23 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         } catch (error) {
             console.error('Erro ao favoritar/remover medicamento:', error);
-            showError('Erro ao atualizar favorito');
+            showAlert('Erro ao atualizar favorito', 'error');
         }
     }
 
+    // METODO PARA FAVORITAR E DESFAVORITAR LOCAIS
     async function toggleFavoriteLocation(location, button) {
         const userEmail = await getUserEmail();
         if (!userEmail) {
-            showError('Você precisa estar logado para favoritar itens');
+            const message = 'Você precisa estar logado para favoritar itens';
+            showAlert(message, 'info');
             return;
         }
 
+        // Verifica se elemento esta favoritado
         const isFavorite = button.querySelector('i').classList.contains('bi-star-fill');
         try {
+            // Se sim, desfavorita
             if (isFavorite) {
                 const response = await fetch(`/favorites/delete-location/${location.codigo_cnes}`, {
                     method: 'DELETE',
@@ -189,7 +230,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                     throw new Error(`Erro ao remover local: ${response.status}`);
                 }
                 updateButtonState(button, false);
-            } else {
+            } else { // Se não, favorita
                 const response = await fetch('/favorites/save-location', {
                     method: 'POST',
                     credentials: 'include',
@@ -206,20 +247,13 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
         } catch (error) {
             console.error('Erro ao favoritar/remover local:', error);
-            showError('Erro ao atualizar favorito');
+            showAlert('Erro ao atualizar favorito', 'error');
         }
     }
 
+    // ATUALIZA ICONE DO BOTÃO DE FAVORITO
     function updateButtonState(button, isFavorite) {
-        if (!button) {
-            console.error('Botão não encontrado para atualização de estado');
-            return;
-        }
         const icon = button.querySelector('i');
-        if (!icon) {
-            console.error('Ícone não encontrado no botão:', button);
-            return;
-        }
         if (isFavorite) {
             icon.classList.remove('bi-star');
             icon.classList.add('bi-star-fill');
@@ -229,6 +263,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
+    // APLICA FILTROS DE BUSCA
     function applyFilters(locations) {
         const cepFilter = document.getElementById('cepInput')?.value.trim().replace(/\D/g, '') || '';
         const neighborhoodFilter = document.getElementById('neighborhoodInput')?.value.trim().toLowerCase() || '';
@@ -252,32 +287,31 @@ document.addEventListener('DOMContentLoaded', async function() {
         return filtered;
     }
 
+    // APRESENTA RESULTADOS DA BUSCA - LOCAIS
     function displayResults(locations, favorites) {
+        // Pega elementos HMTL
         const container = document.getElementById('resultsContainer');
         const resultsSection = document.getElementById('resultsSection');
         const template = document.getElementById('location-card-template');
 
-        if (!container || !resultsSection || !template) {
-            console.error('Elementos de resultado não encontrados:', {
-                container: !!container,
-                resultsSection: !!resultsSection,
-                template: !!template
-            });
-            return;
-        }
 
         container.innerHTML = '';
 
+        // Veridica se há medicamentos no array
         if (locations.length === 0) {
             let message = 'Nenhum estabelecimento encontrado com este medicamento em estoque';
+            showAlert(message, 'info');
             container.innerHTML = `<div class="col-12"><div class="alert alert-info">${message}</div></div>`;
             resultsSection.classList.remove('d-none');
             return;
         }
 
+        // CRIA ELEMENTO HTML PARA CARD DE LOCAL
+        // !!! Substituir pelo template já existente em index.html
         const resultCount = document.createElement('div');
         resultCount.className = 'col-12 mb-3';
-        resultCount.innerHTML = `<div class="alert alert-success"><strong>${locations.length}</strong> estabelecimento(s) encontrado(s)</div>`;
+        const message = `${locations.length} estabelecimento(s) encontrado(s)`;
+        showAlert(message, 'info')
         container.appendChild(resultCount);
 
         locations.forEach(location => {
@@ -292,36 +326,46 @@ document.addEventListener('DOMContentLoaded', async function() {
             clone.querySelector('[data-field="cep"]').textContent = formatCEP(location.cep) || 'Não informado';
             clone.querySelector('[data-field="phone"]').textContent = location.telefone || 'Não informado';
 
-            const saveButton = clone.querySelector('.favorite-btn');
-            if (!saveButton) {
-                console.error('Botão .favorite-btn não encontrado no clone do template:', clone);
-                return;
-            }
-            const isLocationFavorited = favorites.locations && favorites.locations.some(loc => loc.cnesCode === location.cnesCode);
-            updateButtonState(saveButton, isLocationFavorited);
-            saveButton.addEventListener('click', () => toggleFavoriteLocation(location, saveButton));
+            const favoriteSaveButton = clone.querySelector('.location-btn');
+            const isLocationFavorite = favorites.locations && favorites.locations.some(loc => loc.codigo_cnes === location.codigo_cnes);
+            updateButtonState(favoriteSaveButton, isLocationFavorite);
+            favoriteSaveButton.addEventListener('click', () => toggleFavoriteLocation(location, favoriteSaveButton));
 
             container.appendChild(clone);
         });
 
+        const medicineSaveButton = document.querySelector('.medicine-btn');
+        const isMedicineFavorite = favorites.medicines && favorites.medicines.some(med => med.catmatCode === medicine.catmatCode);
+        updateButtonState(medicineSaveButton, isMedicineFavorite);
+        medicineSaveButton.addEventListener('click', () => toggleFavoriteMedicine(selectedMedicine, medicineSaveButton));
+
         resultsSection.classList.remove('d-none');
     }
 
-    function showError(message) {
-        const errorElement = document.getElementById('errorMessage');
-        if (errorElement) {
+    // APRESENTA ALERTAS
+    function showAlert(message, type) {
+
+        if(type == 'error') {
+            const errorElement = document.getElementById('errorMessage');
             errorElement.textContent = message;
             errorElement.classList.remove('d-none');
+        } else if (type == 'info') {
+            const infoMessage = document.getElementById('infoMessage');
+            infoMessage.textContent = message;
+            infoMessage.classList.remove('d-none');
+
         }
     }
 
-    function hideError() {
+    // ESCONDE ALERTAS
+    function hideAlert() {
         const errorElement = document.getElementById('errorMessage');
         if (errorElement) {
             errorElement.classList.add('d-none');
         }
     }
 
+    // APRESENTA ELEMENTOS DE CARREGAMENTO NO BOTÃO
     function showLoading(show) {
         const medicineInput = document.getElementById('medicineInput');
         const cepInput = document.getElementById('cepInput');
@@ -359,11 +403,13 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     }
 
+    // REGEX PARA FORMATAR CEP
     function formatCEP(cep) {
         if (!cep) return '';
         return cep.replace(/(\d{5})(\d{3})/, '$1-$2');
     }
 
+    // PEGA EMAIL DO USUÁRIO - VERIFICA SE ESTÁ LOGADO
     async function getUserEmail() {
         try {
             const response = await fetch('/user/email', {

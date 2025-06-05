@@ -35,7 +35,7 @@
         <div class="row">
 
 
-            <div class="col">
+            <div class="col" id="medicine-container">
 
                 <h3 class="mb-3 text-center" id="medicineTitle">Medicamentos</h3>
 
@@ -43,14 +43,16 @@
 
                     <div class="position-relative">
                         <div class="col-lg-4 col-md-6 mb-4 position-absolute top-0 start-50 translate-middle-x">
-                            <div class="card h-100 shadow-sm">
+                            <div class="card h-100 shadow-sm card-hover">
                                 <div class="card-body">
+                                    <a href="#" class="medicine-card text-decoration-none">
+                                        <h5 class="card-title mb-3 text-primary" data-field="name" id="favMedicine">Nome do Remédio Favorito</h5>
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-warning">
+                                            <i class="bi bi-star"></i>
+                                        </button>
 
-                                    <h5 class="card-title mb-3 text-primary" data-field="name">Nome do Remédio Favorito</h5>
-                                    <button type="button"
-                                            class="btn btn-sm btn-outline-warning">
-                                        <i class="bi bi-star">Salvar</i>
-                                    </button>
+                                    </a>
 
                                 </div>
                             </div>
@@ -67,8 +69,8 @@
                 <template id="location-card-template">
 
                     <div class="position-relative">
-                    <div class="col-lg-4 col-md-6 mb-4 position-absolute top-0 start-50 translate-middle-x">
-                        <div class="card h-100 shadow-sm">
+                    <div class="col-lg-4 col-md-6 mb-4 position-absolute">
+                        <div class="card h-100 shadow-sm card-hover">
                             <div class="card-body">
 
                                 <h5 class="card-title text-primary" data-field="name">Nome do Estabelecimento</h5>

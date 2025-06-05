@@ -24,9 +24,11 @@
 
     <h2 class="mb-4 text-center">BUSCAMEDS</h2>
 
+    <!-- Campos de busca -->
+
     <div class="search-section">
         <div class="mb-3 position-relative">
-            <label for="medicineInput" class="form-label">Nome do Remédio: <span class="text-danger">*</span></label>
+            <label for="medicineInput" class="form-label">Nome do Medicamento: <span class="text-danger">*</span></label>
             <input type="text" class="form-control" id="medicineInput" placeholder="Digite o nome do remédio (obrigatório)" required>
             <ul id="suggestionsList" class="list-group suggestions-list"></ul>
         </div>
@@ -48,22 +50,38 @@
                 <span id="spinner" class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
             </button>
         </div>
+
+        <!-- Medicamento escolhido -->
+        <div class="col-lg-4 col-md-6 mb-4 mt-4 d-none" id="favCard">
+            <div class="card h-100 shadow-sm">
+                <div class="card-body d-flex    ">
+                    <h5 class="card-title mb-3 text-primary mx-2" data-field="name">Medicamento: </h5>
+                    <h5 class="card-title mb-3 text-secondary" data-field="favMedicine" id="favMedicine">Nome do Remédio</h5>
+                </div>
+                <button type="button"
+                        class="btn btn-sm btn-outline-warning medicine-btn">
+                    <i class="bi bi-star"></i>
+                </button>
+            </div>
+        </div>
+
     </div>
 
+    <!-- Alertas -->
     <p id="errorMessage" class="alert alert-danger mt-2 d-none"></p>
     <p id="infoMessage" class="alert alert-info mt-2 d-none"></p>
 
-    <!-- Seção de Resultados -->
+    <!-- Resultados -->
     <div id="resultsSection" class="mt-5 d-none">
         <h3 class="mb-3">Estabelecimentos Encontrados</h3>
         <div id="resultsContainer" class="row"></div>
     </div>
 </div>
 
-<!-- Template do card de estabelecimento -->
+<!-- Template card estabelecimentos -->
 <template id="location-card-template">
     <div class="col-lg-4 col-md-6 mb-4">
-        <div class="card h-100 shadow-sm">
+        <div class="card h-100 shadow-sm card-hover">
             <div class="card-body">
                 <h5 class="card-title text-primary" data-field="name">Nome do Estabelecimento</h5>
 
@@ -96,7 +114,7 @@
                 </div>
 
                 <button type="button"
-                        class="btn btn-sm btn-outline-warning favorite-btn">
+                        class="btn btn-sm btn-outline-warning location-btn">
                         <i class="bi bi-star"></i>
                 </button>
 

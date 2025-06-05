@@ -1,8 +1,8 @@
-.card {
+.card-hover {
     transition: all .2s ease-in-out;
 }
 
-.card:hover {
+.card-hover:hover {
     transform: scale(1.05);
     border-top: 6px solid dodgerblue;
 }

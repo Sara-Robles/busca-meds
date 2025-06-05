@@ -14,11 +14,12 @@
             // Oculta títulos (medicamentos e locais)
             document.getElementById('medicineTitle').classList.add('d-none');
             document.getElementById('locationTitle').classList.add('d-none');
+            document.getElementById('updatePageButton').classList.add('d-none');
+            document.getElementById('logoutButton').classList.add('d-none');
             return;
         } else {
             // Oculta página de login
             document.getElementById('loginLink').classList.add('d-none');
-
             document.getElementById('medicineTitle').classList.remove('d-none');
             document.getElementById('locationTitle').classList.remove('d-none');
         }
@@ -226,6 +227,24 @@
                 button.classList.add('btn-outline-warning');
                 button.querySelector('i').className = 'bi-star';
             }
+        }
+
+        function sendFavMedicineSearch() {
+            const template = document.getElementById('medicine-card-template');
+            const container = document.getElementById('medicine-container');
+
+            const clone = document.importNode(template.content, true);
+            container.appendChild(clone);
+
+            const medicineCard = document.getElementById('medicine-card');
+
+            medicineCard.addEventListener('click', function () {
+                const favMedicine = medicineCard.getElementById('favMedicine').value;
+                localStorage.setItem('favMedicine', favMedicine);
+                console.log(favMedicine)
+                // window.location.href = '/buscameds/home';
+            });
+
         }
 
         // Show error message
