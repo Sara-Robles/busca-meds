@@ -97,7 +97,9 @@ document.addEventListener('DOMContentLoaded', async function() {
     // EVENTO DE CLICK NO BOTÃO BUSCAR
     searchButton.addEventListener('click', async function() {
 
-        if (!selectedCatmat) {
+        // Verifica se o input de remédio está vazio
+        const medicineValue = medicineInput.value.trim();
+        if (!medicineValue) {
             const message = 'Por favor, selecione um medicamento da lista de sugestões';
             showAlert(message, 'error');
             return;

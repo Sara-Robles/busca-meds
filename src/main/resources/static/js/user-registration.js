@@ -8,31 +8,49 @@ document.addEventListener('DOMContentLoaded', async function() {
         const email = document.getElementById('emailInput').value;
         const password = document.getElementById('passwordInput').value;
 
-        fetch('/user/registration', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
+        try {
 
-            // Permite enviar e receber cookies
-            credentials: 'include',
+            fetch('/user/registration', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
 
-            // JSON a ser passado para o back-end
-            body: JSON.stringify({ name: name, email: email, password: password })
-        })
-            .then(response => {
-                if (response.ok) {
-                    alert('Cadastro bem-sucedido!');
+                // Permite enviar e receber cookies
+                credentials: 'include',
 
-                    // Redirecionar para login
-                    window.location.href = '/buscameds/user/login';
-
-                } else {
-                    alert('Não foi possível realizar o cadastro!');
-                }
+                // JSON a ser passado para o back-end
+                body: JSON.stringify({ name: name, email: email, password: password })
             })
-            .catch(error => {
+                .then(response => {
+                    if (response.ok) {
+                        alert('Cadastro bem-sucedido!');
+
+                        // Redirecionar para login
+                        window.location.href = '/buscameds/user/login';
+
+                    } else {
+                        alert('Não foi possível realizar o cadastro!');
+                    }
+                })
+
+        } catch(error) {
                 console.error('Erro na requisição:', error);
-            });
+        }
     });
+
+    function showError(message) {
+        const errorElement = document.getElementById('errorMessage');
+        if (errorElement) {
+            errorElement.textContent = message;
+            errorElement.classList.remove('d-none');
+        }
+    }
+
+    function hideError() {
+        const errorElement = document.getElementById('errorMessage');
+        if (errorElement) {
+            errorElement.classList.add('d-none');
+        }
+    }
 });

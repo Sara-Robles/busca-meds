@@ -44,4 +44,19 @@ document.addEventListener('DOMContentLoaded', async function() {
         window.location.href = '/buscameds/user/registration';
     });
 
+    function showError(message) {
+        const errorElement = document.getElementById('errorMessage');
+        if (errorElement) {
+            errorElement.textContent = message;
+            errorElement.classList.remove('d-none');
+        }
+    }
+
+    function hideError() {
+        const errorElement = document.getElementById('errorMessage');
+        if (errorElement) {
+            errorElement.classList.add('d-none');
+        }
+    }
+
 });

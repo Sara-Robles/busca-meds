@@ -22,18 +22,18 @@
         <h2 class="mb-4 text-center">Atualizar Conta</h2>
 
         <div class="mb-3">
-            <label for="nameInput" class="form-label">Nome</label>
-            <input type="text" class="form-control" id="nameInput">
+            <label for="nameInput" class="form-label">Nome <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="nameInput" placeholder="Digite o nome" required>
         </div>
 
         <div class="mb-3">
-            <label for="emailInput" class="form-label">Email</label>
-            <input type="email" class="form-control" id="emailInput">
+            <label for="emailInput" class="form-label">Email <span class="text-danger">*</span></label>
+            <input type="email" class="form-control" id="emailInput" required>
         </div>
 
         <div class="mb-3">
-            <label for="passwordInput" class="form-label">Senha</label>
-            <input type="password" class="form-control" id="passwordInput">
+            <label for="passwordInput" class="form-label">Senha <span class="text-danger">*</span></label>
+            <input type="password" class="form-control" id="passwordInput" placeholder="Digite sua senha atual (para manter) ou uma senha nova (para atualizar)" required>
         </div>
 
         <button type="button" class="btn btn-primary" id="updateButton">Atualizar</button>

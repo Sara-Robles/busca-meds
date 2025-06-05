@@ -97,26 +97,4 @@ document.addEventListener('DOMContentLoaded', async function() {
             errorElement.classList.add('d-none');
         }
     }
-
-    async function getUserEmail() {
-        try {
-            const response = await fetch('/user/email', {
-                method: 'GET',
-                credentials: 'include',
-                headers: {
-                    'Accept': 'application/json',
-                },
-            });
-            if (!response.ok) {
-                throw new Error(`Erro ao recuperar email: ${response.status}`);
-            }
-
-            const data = await response.json();
-            return data.email || data;
-
-        } catch (error) {
-            console.error(error.message);
-            return null;
-        }
-    }
 });

@@ -1,8 +1,5 @@
     document.addEventListener('DOMContentLoaded', async function() {
 
-        // FETCH INICIAL - APRESENTAR FAVORITOS
-        await fetchFavorites();
-
         // BOTÃO ATUALIZAR CONTA
         document.getElementById('updatePageButton').addEventListener('click', async function () {
             window.location.href = '/buscameds/user/update';
@@ -15,6 +12,8 @@
         // VERIFICA SE USUARIO ESTA LOGADO
         // REMOVE OU APRESENTA LINKS
         let userEmail = await getUserEmail();
+
+        // SE USUÁRIO NÃO ESTIVER LOGADO
         if (!userEmail) {
             const message = 'Você precisa estar logado para ver os favoritos';
             showAlert(message, 'info');
@@ -23,9 +22,13 @@
             document.getElementById('updatePageButton').classList.add('d-none');
             document.getElementById('logoutButton').classList.add('d-none');
             return;
+
+        // SE USUÁRIO ESTIVER LOGADO
         } else {
-            // Oculta página de login
             document.getElementById('loginLink').classList.add('d-none');
+
+            // APRESENTA FAVORITOS
+            await fetchFavorites();
         }
 
         // PEGA FAVORITOS DO USUARIO
@@ -178,6 +181,14 @@
                 infoMessage.textContent = message;
                 infoMessage.classList.remove('d-none');
 
+            }
+        }
+
+        // ESCONDE ALERTAS
+        function hideAlert() {
+            const errorElement = document.getElementById('errorMessage');
+            if (errorElement) {
+                errorElement.classList.add('d-none');
             }
         }
 
