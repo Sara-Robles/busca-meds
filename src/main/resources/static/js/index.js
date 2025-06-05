@@ -4,16 +4,8 @@ let selectedMedicine = null;
 
 document.addEventListener('DOMContentLoaded', async function() {
 
-    const medicineInput = document.getElementById('medicineInput');
 
-    const favMedicine = localStorage.getItem('favMedicine');
-
-    console.log(favMedicine);
-
-    if(favMedicine) {
-        medicineInput.textContent = favMedicine;
-    }
-
+    // VERIFICA SE USUARIO ESTA LOGADO
     // APRESENTA OU REMOVE OPÇÃO DE LOGIN
     let userEmail = await getUserEmail();
     if (!userEmail) {
@@ -37,6 +29,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         return;
     }
 
+    const medicineInput = document.getElementById('medicineInput');
 
     // APRESENTAR SUGESTÕES AO DIGITAR - campo de input de medicamentos
     medicineInput.addEventListener('input', function(e) {
@@ -87,13 +80,14 @@ document.addEventListener('DOMContentLoaded', async function() {
             const catmat = suggestionItem.getAttribute('data-catmat');
             const name = suggestionItem.getAttribute('data-name');
 
-            medicineInput.value = name; // Adiciona nome no campo de inpu
+            medicineInput.value = name; // Adiciona nome no campo de input
             selectedCatmat = catmat;
             // busca objeto medicamento a partir do codigo catmat do item selecionado
             selectedMedicine = tabelaCatmat.find(med => med.codigo_catmat === catmat);
             suggestionsList.style.display = 'none'; // Esconde lista
 
             console.log('Medicamento selecionado:', name, 'CATMAT:', catmat);
+            console.log('selectedMedicine = ', selectedMedicine)
         }
     });
 
@@ -112,14 +106,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         // Pega bairro do input para enviar na requisição
         const neighborhoodInput = document.getElementById('neighborhoodInput');
         const neighborhood = neighborhoodInput ? neighborhoodInput.value.trim() : '';
-
-        // Pega elementos do template de locais
-        const favCard = document.getElementById("favCard");
-        favCard.classList.remove("d-none");
-
-        // Pega elemento para car de medicamento selecionado
-        const favMedicine = document.getElementById("favMedicine");
-        favMedicine.textContent = medicineInput.value;
 
         try {
             showLoading(true); // apresenta status "carregando"
@@ -160,51 +146,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     });
 
-    // METODO PARA FAVORITAR E DESFAVORITAR MEDICAMENTOS
-    async function toggleFavoriteMedicine(medicine, button) {
-        const userEmail = await getUserEmail();
-        if (!userEmail) {
-            const message = 'Você precisa estar logado para favoritar itens';
-            showAlert(message, 'info');
-            return;
-        }
-        // Verifica se elemento esta favoritado
-        const isFavorite = button.querySelector('i').classList.contains('bi-star-fill');
-        try {
-            // Se sim, desfavorita
-            if (isFavorite) {
-                const response = await fetch(`/favorites/delete-medicine/${medicine.catmat_code}`, {
-                    method: 'DELETE',
-                    credentials: 'include',
-                    headers: {
-                        'Accept': 'application/json',
-                    },
-                });
-                if (!response.ok) {
-                    throw new Error(`Erro ao remover medicamento: ${response.status}`);
-                }
-                updateButtonState(button, false);
-            } else { // Se não, favorita
-                const response = await fetch('/favorites/save-medicine', {
-                    method: 'POST',
-                    credentials: 'include',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json',
-                    },
-                    body: JSON.stringify(medicine),
-                });
-                if (!response.ok) {
-                    throw new Error(`Erro ao salvar medicamento: ${response.status}`);
-                }
-                updateButtonState(button, true);
-            }
-        } catch (error) {
-            console.error('Erro ao favoritar/remover medicamento:', error);
-            showAlert('Erro ao atualizar favorito', 'error');
-        }
-    }
-
     // METODO PARA FAVORITAR E DESFAVORITAR LOCAIS
     async function toggleFavoriteLocation(location, button) {
         const userEmail = await getUserEmail();
@@ -231,7 +172,8 @@ document.addEventListener('DOMContentLoaded', async function() {
                 }
                 updateButtonState(button, false);
             } else { // Se não, favorita
-                const response = await fetch('/favorites/save-location', {
+                const medicine = `${selectedMedicine.principio_ativo} | ${selectedMedicine.concentracao} | ${selectedMedicine.forma_farmaceutica}`
+                const response = await fetch(`/favorites/save-location?medicine=${encodeURIComponent(medicine)}`, {
                     method: 'POST',
                     credentials: 'include',
                     headers: {
@@ -294,26 +236,20 @@ document.addEventListener('DOMContentLoaded', async function() {
         const resultsSection = document.getElementById('resultsSection');
         const template = document.getElementById('location-card-template');
 
-
         container.innerHTML = '';
 
-        // Veridica se há medicamentos no array
+        // Verifica se há medicamentos no array
         if (locations.length === 0) {
             let message = 'Nenhum estabelecimento encontrado com este medicamento em estoque';
             showAlert(message, 'info');
-            container.innerHTML = `<div class="col-12"><div class="alert alert-info">${message}</div></div>`;
             resultsSection.classList.remove('d-none');
             return;
         }
 
-        // CRIA ELEMENTO HTML PARA CARD DE LOCAL
-        // !!! Substituir pelo template já existente em index.html
-        const resultCount = document.createElement('div');
-        resultCount.className = 'col-12 mb-3';
         const message = `${locations.length} estabelecimento(s) encontrado(s)`;
         showAlert(message, 'info')
-        container.appendChild(resultCount);
 
+        // PREENCHE TEMPLATE HTML PARA CARD DE LOCAL
         locations.forEach(location => {
             const clone = template.content.cloneNode(true);
 
@@ -334,34 +270,29 @@ document.addEventListener('DOMContentLoaded', async function() {
             container.appendChild(clone);
         });
 
-        const medicineSaveButton = document.querySelector('.medicine-btn');
-        const isMedicineFavorite = favorites.medicines && favorites.medicines.some(med => med.catmatCode === medicine.catmatCode);
-        updateButtonState(medicineSaveButton, isMedicineFavorite);
-        medicineSaveButton.addEventListener('click', () => toggleFavoriteMedicine(selectedMedicine, medicineSaveButton));
-
         resultsSection.classList.remove('d-none');
     }
 
-    // APRESENTA ALERTAS
-    function showAlert(message, type) {
+    // PEGA EMAIL DO USUÁRIO - VERIFICA SE ESTÁ LOGADO
+    async function getUserEmail() {
+        try {
+            const response = await fetch('/user/email', {
+                method: 'GET',
+                credentials: 'include',
+                headers: {
+                    'Accept': 'application/json',
+                },
+            });
+            if (!response.ok) {
+                throw new Error(`Erro ao recuperar email: ${response.status}`);
+            }
 
-        if(type == 'error') {
-            const errorElement = document.getElementById('errorMessage');
-            errorElement.textContent = message;
-            errorElement.classList.remove('d-none');
-        } else if (type == 'info') {
-            const infoMessage = document.getElementById('infoMessage');
-            infoMessage.textContent = message;
-            infoMessage.classList.remove('d-none');
+            const data = await response.json();
+            return data.email || data;
 
-        }
-    }
-
-    // ESCONDE ALERTAS
-    function hideAlert() {
-        const errorElement = document.getElementById('errorMessage');
-        if (errorElement) {
-            errorElement.classList.add('d-none');
+        } catch (error) {
+            console.error(error.message);
+            return null;
         }
     }
 
@@ -409,26 +340,27 @@ document.addEventListener('DOMContentLoaded', async function() {
         return cep.replace(/(\d{5})(\d{3})/, '$1-$2');
     }
 
-    // PEGA EMAIL DO USUÁRIO - VERIFICA SE ESTÁ LOGADO
-    async function getUserEmail() {
-        try {
-            const response = await fetch('/user/email', {
-                method: 'GET',
-                credentials: 'include',
-                headers: {
-                    'Accept': 'application/json',
-                },
-            });
-            if (!response.ok) {
-                throw new Error(`Erro ao recuperar email: ${response.status}`);
-            }
+    // APRESENTA ALERTAS
+    function showAlert(message, type) {
 
-            const data = await response.json();
-            return data.email || data;
+        if(type === 'error') {
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.textContent = message;
+            errorElement.classList.remove('d-none');
+        } else if (type === 'info') {
+            const infoMessage = document.getElementById('infoMessage');
+            infoMessage.textContent = message;
+            infoMessage.classList.remove('d-none');
 
-        } catch (error) {
-            console.error(error.message);
-            return null;
         }
     }
+
+    // ESCONDE ALERTAS
+    function hideAlert() {
+        const errorElement = document.getElementById('errorMessage');
+        if (errorElement) {
+            errorElement.classList.add('d-none');
+        }
+    }
+
 });

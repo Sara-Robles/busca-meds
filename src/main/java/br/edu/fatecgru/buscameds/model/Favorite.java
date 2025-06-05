@@ -4,24 +4,15 @@ import java.util.List;
 
 public class Favorite {
 
-    List<Medicine> medicines;
     List<Location> locations;
 
     public Favorite() {
     }
 
-    public Favorite(List<Medicine> medicines, List<Location> locations) {
-        this.medicines = medicines;
+    public Favorite(List<Location> locations) {
         this.locations = locations;
     }
 
-    public List<Medicine> getMedicines() {
-        return medicines;
-    }
-
-    public void setMedicines(List<Medicine> medicines) {
-        this.medicines = medicines;
-    }
 
     public List<Location> getLocations() {
         return locations;
@@ -29,10 +20,6 @@ public class Favorite {
 
     public void setLocations(List<Location> locations) {
         this.locations = locations;
-    }
-
-    public void addMedicine(Medicine medicine) {
-        medicines.add(medicine);
     }
 
     public void addLocation(Location location) {

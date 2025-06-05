@@ -10,12 +10,13 @@ public class Location {
     private String numero_endereco;
     private String bairro;
     private String cep;
+    private String medicamento;
 
 
     public Location() {}
 
     public Location(String codigo_cnes, String nome_fantasia, String telefone, String municipio,
-                    String logradouro, String numero_endereco, String bairro, String cep) {
+                    String logradouro, String numero_endereco, String bairro, String cep, String medicamento) {
         this.codigo_cnes = codigo_cnes;
         this.nome_fantasia = nome_fantasia;
         this.telefone = telefone;
@@ -24,6 +25,7 @@ public class Location {
         this.numero_endereco = numero_endereco;
         this.bairro = bairro;
         this.cep = cep;
+        this.medicamento = medicamento;
     }
 
     public String getCodigo_cnes() {
@@ -88,6 +90,14 @@ public class Location {
 
     public void setCep(String cep) {
         this.cep = cep;
+    }
+
+    public String getMedicamento() {
+        return medicamento;
+    }
+
+    public void setMedicamento(String medicamento) {
+        this.medicamento = medicamento;
     }
 
 }

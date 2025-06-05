@@ -1,62 +1,34 @@
     document.addEventListener('DOMContentLoaded', async function() {
 
+        // FETCH INICIAL - APRESENTAR FAVORITOS
+        await fetchFavorites();
+
+        // BOTÃO ATUALIZAR CONTA
+        document.getElementById('updatePageButton').addEventListener('click', async function () {
+            window.location.href = '/buscameds/user/update';
+        });
+
         // Apresenta os botões de alterar conta e logout
         document.getElementById('updatePageButton').classList.remove('d-none');
         document.getElementById('logoutButton').classList.remove('d-none');
 
-        // Extract user email
+        // VERIFICA SE USUARIO ESTA LOGADO
+        // REMOVE OU APRESENTA LINKS
         let userEmail = await getUserEmail();
         if (!userEmail) {
-            showError('Você precisa estar logado para ver os favoritos');
-            console.error('Usuário não autenticado');
-            document.getElementById('loginLink').classList.remove('d-none');
+            const message = 'Você precisa estar logado para ver os favoritos';
+            showAlert(message, 'info');
 
-            // Oculta títulos (medicamentos e locais)
-            document.getElementById('medicineTitle').classList.add('d-none');
-            document.getElementById('locationTitle').classList.add('d-none');
+            document.getElementById('loginLink').classList.remove('d-none');
             document.getElementById('updatePageButton').classList.add('d-none');
             document.getElementById('logoutButton').classList.add('d-none');
             return;
         } else {
             // Oculta página de login
             document.getElementById('loginLink').classList.add('d-none');
-            document.getElementById('medicineTitle').classList.remove('d-none');
-            document.getElementById('locationTitle').classList.remove('d-none');
         }
 
-        // Extract user email from response
-        async function getUserEmail() {
-            try {
-                const response = await fetch('/user/email', {
-                    method: 'GET',
-                    credentials: 'include',
-                    headers: {
-                        'Accept': 'application/json',
-                    },
-                });
-                if (!response.ok) {
-                    throw new Error(`Erro ao recuperar email: ${response.status}`);
-                }
-
-                const data = await response.json();
-                return data.email || data;
-
-            } catch (error) {
-                console.error(error.message);
-                return null;
-            }
-        }
-
-        // Containers for medicines and locations
-        const medicinesContainer = document.createElement('div');
-        medicinesContainer.className = 'row';
-        document.querySelector('.col:nth-child(1)').appendChild(medicinesContainer);
-
-        const locationsContainer = document.createElement('div');
-        locationsContainer.className = 'row';
-        document.querySelector('.col:nth-child(2)').appendChild(locationsContainer);
-
-        // Fetch favorites on page load
+        // PEGA FAVORITOS DO USUARIO
         async function fetchFavorites() {
             try {
                 const response = await fetch('/favorites/list', {
@@ -77,23 +49,13 @@
 
             } catch (error) {
                 console.error('Erro ao carregar favoritos:', error);
-                showError('Erro ao carregar favoritos');
+                showAlert('Erro ao carregar favoritos', 'error');
             }
         }
 
-        // Display favorites in their respective sections
+       // APRESENTA FAVORITOS
         function displayFavorites(favorites) {
-            medicinesContainer.innerHTML = '';
-            locationsContainer.innerHTML = '';
-
-            if (favorites.medicines && favorites.medicines.length > 0) {
-                favorites.medicines.forEach(medicine => {
-                    const card = createMedicineCard(medicine, true);
-                    medicinesContainer.appendChild(card);
-                });
-            } else {
-                medicinesContainer.innerHTML = '<div class="col-12"><div class="alert alert-info">Nenhum medicamento favoritado</div></div>';
-            }
+            const locationsContainer = document.getElementById('locationsContainer');
 
             if (favorites.locations && favorites.locations.length > 0) {
                 favorites.locations.forEach(location => {
@@ -101,25 +63,11 @@
                     locationsContainer.appendChild(card);
                 });
             } else {
-                locationsContainer.innerHTML = '<div class="col-12"><div class="alert alert-info">Nenhum local favoritado</div></div>';
+                showAlert('Nenhum local favoritado', 'info')
             }
         }
 
-        // Create a medicine card
-        function createMedicineCard(medicine, isFavorite) {
-            const template = document.getElementById('medicine-card-template');
-            const clone = template.content.cloneNode(true);
-
-            clone.querySelector('[data-field="name"]').textContent = medicine.principio_ativo || 'Não informado';
-
-            const saveButton = clone.querySelector('button');
-            updateButtonState(saveButton, isFavorite);
-            saveButton.addEventListener('click', () => toggleFavoriteMedicine(medicine, saveButton));
-
-            return clone;
-        }
-
-        // Create a location card
+        // CRIA CARD PARA LOCAL
         function createLocationCard(location, isFavorite) {
             const template = document.getElementById('location-card-template');
             const clone = template.content.cloneNode(true);
@@ -132,6 +80,7 @@
             clone.querySelector('[data-field="state"]').textContent = location.uf || 'SP';
             clone.querySelector('[data-field="cep"]').textContent = formatCEP(location.cep) || 'Não informado';
             clone.querySelector('[data-field="phone"]').textContent = location.telefone || 'Não informado';
+            clone.querySelector('[data-field="medicine"]').textContent = location.medicamento || 'Não informado';
 
             const saveButton = clone.querySelector('button');
             updateButtonState(saveButton, isFavorite);
@@ -140,44 +89,9 @@
             return clone;
         }
 
-        // Toggle favorite status for a medicine
-        async function toggleFavoriteMedicine(medicine, button) {
-            const isFavorite = button.classList.contains('btn-warning');
-            try {
-                if (isFavorite) {
-                    const response = await fetch(`/favorites/delete-medicine/${medicine.codigo_catmat}`, {
-                        method: 'DELETE',
-                        headers: {
-                            'Accept': 'application/json',
-                        },
-                    });
-                    if (!response.ok) {
-                        throw new Error(`Erro ao remover medicamento: ${response.status}`);
-                    }
-                    updateButtonState(button, false);
-                    fetchFavorites();
-                } else {
-                    const response = await fetch('/favorites/save-medicine', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'Accept': 'application/json',
-                        },
-                        body: JSON.stringify(medicine),
-                    });
-                    if (!response.ok) {
-                        throw new Error(`Erro ao salvar medicamento: ${response.status}`);
-                    }
-                    updateButtonState(button, true);
-                    fetchFavorites();
-                }
-            } catch (error) {
-                console.error('Erro ao favoritar/remover medicamento:', error);
-                showError('Erro ao atualizar favorito');
-            }
-        }
 
-        // Toggle favorite status for a location
+
+        // FAVORITAS OU DESFAVORITAR LOCAIS
         async function toggleFavoriteLocation(location, button) {
             const isFavorite = button.classList.contains('btn-warning');
             try {
@@ -212,11 +126,11 @@
                 }
             } catch (error) {
                 console.error('Erro ao favoritar/remover local:', error);
-                showError('Erro ao atualizar favorito');
+                showAlert('Erro ao atualizar favorito', 'error');
             }
         }
 
-        // Update button state (favorited or not)
+        // ATUALIZA ICONE BOTÃO
         function updateButtonState(button, isFavorite) {
             if (isFavorite) {
                 button.classList.remove('btn-outline-warning');
@@ -229,31 +143,42 @@
             }
         }
 
-        function sendFavMedicineSearch() {
-            const template = document.getElementById('medicine-card-template');
-            const container = document.getElementById('medicine-container');
+        // PEGA EMAIL DO USUARION PELO ENDPOINT
+        async function getUserEmail() {
+            try {
+                const response = await fetch('/user/email', {
+                    method: 'GET',
+                    credentials: 'include',
+                    headers: {
+                        'Accept': 'application/json',
+                    },
+                });
+                if (!response.ok) {
+                    throw new Error(`Erro ao recuperar email: ${response.status}`);
+                }
 
-            const clone = document.importNode(template.content, true);
-            container.appendChild(clone);
+                const data = await response.json();
+                return data.email || data;
 
-            const medicineCard = document.getElementById('medicine-card');
-
-            medicineCard.addEventListener('click', function () {
-                const favMedicine = medicineCard.getElementById('favMedicine').value;
-                localStorage.setItem('favMedicine', favMedicine);
-                console.log(favMedicine)
-                // window.location.href = '/buscameds/home';
-            });
-
+            } catch (error) {
+                console.error(error.message);
+                return null;
+            }
         }
 
-        // Show error message
-        function showError(message) {
-            const errorDiv = document.createElement('div');
-            errorDiv.className = 'alert alert-danger mt-3';
-            errorDiv.textContent = message;
-            document.querySelector('.alertContainer').prepend(errorDiv);
-            setTimeout(() => errorDiv.remove(), 3000);
+
+        // APRESENTA ALERTA
+        function showAlert(message, type) {
+            if(type === 'error') {
+                const errorElement = document.getElementById('errorMessage');
+                errorElement.textContent = message;
+                errorElement.classList.remove('d-none');
+            } else if (type === 'info') {
+                const infoMessage = document.getElementById('infoMessage');
+                infoMessage.textContent = message;
+                infoMessage.classList.remove('d-none');
+
+            }
         }
 
         // Format CEP
@@ -262,11 +187,5 @@
             return cep.replace(/(\d{5})(\d{3})/, '$1-$2');
         }
 
-        // Initial fetch of favorites
-        await fetchFavorites();
-
-        document.getElementById('updatePageButton').addEventListener('click', async function () {
-            window.location.href = '/buscameds/user/update';
-        });
 
     });
