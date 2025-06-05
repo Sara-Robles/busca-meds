@@ -22,14 +22,18 @@
 
         <h2 class="mb-4 text-center">CADASTRO</h2>
 
-        <div class="mb-3">
-            <label for="nameInput" class="form-label">Nome <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="nameInput" placeholder="Digite o nome" required>
-        </div>
+        <!-- Alertas -->
+        <p id="errorMessage" class="alert alert-danger mt-2 d-none"></p>
+        <p id="infoMessage" class="alert alert-info mt-2 d-none"></p>
 
         <div class="mb-3">
             <label for="emailInput" class="form-label">Email <span class="text-danger">*</span></label></label>
             <input type="email" class="form-control" id="emailInput" placeholder="Digite o email" required>
+        </div>
+
+        <div class="mb-3">
+            <label for="nameInput" class="form-label">Nome <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="nameInput" placeholder="Digite o nome" required>
         </div>
 
         <div class="mb-3">

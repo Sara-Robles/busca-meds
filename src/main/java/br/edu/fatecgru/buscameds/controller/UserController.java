@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@CrossOrigin(origins = "*")
 @RequestMapping("user")
 public class UserController {
 
@@ -26,8 +27,10 @@ public class UserController {
 
 
     @GetMapping("/list")
-    public ResponseEntity<List<User>> getUsers() {
-        return ResponseEntity.ok(userService.findAll());
+    public ResponseEntity<Map <String, List<User> > > getUsers() {
+        Map<String, List <User> > response = new HashMap<>();
+        response.put("users", userService.findAll());
+        return ResponseEntity.ok(response); // Retorna em formato JSON
     }
 
 

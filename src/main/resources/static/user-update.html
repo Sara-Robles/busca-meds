@@ -21,10 +21,9 @@
 
         <h2 class="mb-4 text-center">Atualizar Conta</h2>
 
-        <div class="mb-3">
-            <label for="nameInput" class="form-label">Nome <span class="text-danger">*</span></label>
-            <input type="text" class="form-control" id="nameInput" placeholder="Digite o nome" required>
-        </div>
+        <!-- Alertas -->
+        <p id="errorMessage" class="alert alert-danger mt-2 d-none"></p>
+        <p id="infoMessage" class="alert alert-info mt-2 d-none"></p>
 
         <div class="mb-3">
             <label for="emailInput" class="form-label">Email <span class="text-danger">*</span></label>
@@ -32,8 +31,14 @@
         </div>
 
         <div class="mb-3">
+            <label for="nameInput" class="form-label">Nome <span class="text-danger">*</span></label>
+            <input type="text" class="form-control" id="nameInput" placeholder="Digite o nome" required>
+        </div>
+
+        <div class="mb-3">
             <label for="passwordInput" class="form-label">Senha <span class="text-danger">*</span></label>
-            <input type="password" class="form-control" id="passwordInput" placeholder="Digite sua senha atual (para manter) ou uma senha nova (para atualizar)" required>
+            <input type="password" class="form-control" id="passwordInput" placeholder="Digite a senha" required>
+            <p class="form-text"> Informe a nova senha, se desejar alterá-la. Caso contrário, preencha com sua senha atual.</p>
         </div>
 
         <button type="button" class="btn btn-primary" id="updateButton">Atualizar</button>

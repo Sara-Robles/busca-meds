@@ -8,6 +8,20 @@ document.addEventListener('DOMContentLoaded', async function() {
         const email = document.getElementById('emailInput').value;
         const password = document.getElementById('passwordInput').value;
 
+        // Verifica se já existe usuário cadastrado com esse email
+        if(await userExistsByEmail(email)) {
+            const message = "Usuário já foi cadastrado com esse email"
+            showAlert(message, 'error')
+            return
+
+        }
+
+        // Verifica se algum campo está vazio
+        if(!name.trim() || !email.trim() || !password.trim()) {
+            showAlert('Preencha todos os campos', 'error')
+            return
+        }
+
         try {
 
             fetch('/user/registration', {
@@ -24,13 +38,13 @@ document.addEventListener('DOMContentLoaded', async function() {
             })
                 .then(response => {
                     if (response.ok) {
-                        alert('Cadastro bem-sucedido!');
+                        showAlert('Cadastro bem-sucedido! Redirecionando...', 'info');
 
                         // Redirecionar para login
-                        window.location.href = '/buscameds/user/login';
+                        setTimeout(() => window.location.href = '/buscameds/user/login', 2000);
 
                     } else {
-                        alert('Não foi possível realizar o cadastro!');
+                        showAlert('Não foi possível realizar o cadastro!','error');
                     }
                 })
 
@@ -39,18 +53,61 @@ document.addEventListener('DOMContentLoaded', async function() {
         }
     });
 
-    function showError(message) {
-        const errorElement = document.getElementById('errorMessage');
-        if (errorElement) {
+    // APRESENTA ALERTA
+    function showAlert(message, type) {
+        if(type === 'error') {
+            const errorElement = document.getElementById('errorMessage');
             errorElement.textContent = message;
             errorElement.classList.remove('d-none');
+            setTimeout(() => hideAlert(), 2000);
+        } else if (type === 'info') {
+            const infoMessage = document.getElementById('infoMessage');
+            infoMessage.textContent = message;
+            infoMessage.classList.remove('d-none');
+
         }
     }
 
-    function hideError() {
+    // ESCONDE ALERTAS
+    function hideAlert() {
         const errorElement = document.getElementById('errorMessage');
         if (errorElement) {
             errorElement.classList.add('d-none');
+        }
+    }
+
+    // VERIFICA SE JÁ EXISTE USUÁRIO CADASTRADO COM ESSE EMAIL
+    async function userExistsByEmail(email) {
+        try {
+            const response = await fetch('/user/list', {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json'
+                },
+                credentials: 'include'
+            })
+            if (!response.ok) {
+                throw new Error(`Erro ao buscar usuários: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            // Verifica se não existem usuários cadastrados
+            if (data === null) {
+                return false
+            }
+            console.log('Dados recebidos:', data);
+
+            // Acessa a propriedade 'users' do JSON retornado
+            return data.users.some(user => {
+                // Compara emails para verificar se já existem
+                return user.email === email;
+            });
+
+        } catch (error) {
+            console.error('Erro na requisição:', error.message);
+            console.error('Detalhes do erro:', error);
+            return false;
         }
     }
 });
